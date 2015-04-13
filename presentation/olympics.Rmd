@@ -1,0 +1,91 @@
+---
+title: Olympic games medals prediction
+author: Daniel Gribel and Joao Paulo Forny
+date: \today
+output:
+  beamer_presentation:
+    colortheme: default
+    fonttheme: default
+    theme: default
+  ioslides_presentation: default
+subtitle: Predicting host country performance
+---
+
+## Model
+
+- Medals history
+- Hosting factor
+- Number of athletes participating
+- Population (total and growth rate) -- also check "population pyramids" evolution
+- GDP (total, per capita and growth rate)
+- Economic freedom
+- Sports investment *
+
+## Hosting factor
+```{r, echo=FALSE}
+# Read values from tab-delimited file 
+medals <- read.table("../dataset/medals.csv", header = T, sep = "\t")
+
+cols <- c("#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF")
+
+hosts <- c("AUS", "GRE", "CHN", "GBR")
+
+ylim <- c(0, 1.1*max(c(medals$AUS, medals$GRE, medals$CHN, medals$GBR)))
+
+# Graph countries with adjacent bars using rainbow colors
+bp <- barplot(as.matrix(medals[, hosts]), main="Total of medals (2000, 2004, 2008, 2012)", ylab = "# Medals", beside = TRUE, col = cols, border = NA, space = c(0.1,1), ylim = ylim)
+
+legend("topleft", legend = c("Performance being host", "Performance being visitor"), fill = c("#388BFF", "#ADCFFF"), bty = "n", inset = 0.03)
+
+text(x = bp, y = c(medals$AUS, medals$GRE, medals$CHN, medals$GBR), label = c(medals$AUS, medals$GRE, medals$CHN, medals$GBR), pos = 3, cex = 0.8, col = "#666666")
+```
+
+## Brazil's performance
+```{r, echo=FALSE}
+medals_bra <- read.table("../dataset/bra-medals.csv", header = T, sep="\t")
+
+cols <- c("#E0D910", "#C8C8C8", "#C7872E")
+
+medals_header <- c("gold", "silver", "bronze")
+
+ylim <- c(0, 1.1*max(medals_bra$gold + medals_bra$silver + medals_bra$bronze))
+
+bp2 <- barplot(t(as.matrix(medals_bra[, medals_header])), main = "Brazil medals distribution (1920 - 2012)", ylab = "# Medals", beside = FALSE, col = cols, border = NA, space = 0.2, names.arg = medals_bra$year, las = 2, ylim = ylim)
+
+legend("topleft", legend = medals_header, fill = cols, bty = "n", inset = 0.03)
+
+text(x = bp2, y = medals_bra$gold + medals_bra$silver + medals_bra$bronze, label = medals_bra$gold + medals_bra$silver + medals_bra$bronze, pos = 3, cex = 0.8, col = "#666666")
+
+#population_bra <- read.table("bra-population.csv", header = T, sep="\t")
+#plot(population_bra$population, type="o", col="blue")
+
+```
+
+## Possible achievements
+
+- Predict medals table for the host country
+    + How many medals will Brazil win in Rio'2016?
+    + What about medals distribution (gold, silver, bronze)?
+    + Is it possible to extend such analysis in order to discriminate predictions for specific sports?
+- Investigate hosting factor
+    + How does hosting factor effectively contributes for performance improvement?
+- Explore visualization mechanisms that may bring some insights
+
+## Validation
+
+- Compare prediction results with past olympic games (2012, 2008, 2004, ...), by shifting datasets in time
+
+## Datasets
+
+For medals history:
+
+- The Guardian Sport Datablog (~30K medals entries)
+    + http://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
+
+- Sports Reference
+    + http://www.sports-reference.com/olympics/
+
+For country indicators:
+
+- The World Bank
+    + http://data.worldbank.org
