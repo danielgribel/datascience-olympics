@@ -15,29 +15,52 @@ subtitle: Predicting host country performance
 
 - Medals history
 - Hosting factor
+- Performance analysis on recent competitions
 - Number of athletes participating
 - Population (total and growth rate) -- also check "population pyramids" evolution
 - GDP (total, per capita and growth rate)
 - Economic freedom
 - Sports investment *
 
-## Hosting factor
+## Hosting factor: Total of medals
 ```{r, echo=FALSE}
-# Read values from tab-delimited file 
-medals <- read.table("../dataset/medals.csv", header = T, sep = "\t")
+source("~/PUC-MSc/datascience/olympics/src/script.R")
+bp_totals <- barplot(total_medals, main="Total of medals (1992, 1996, 2000, 2004, 2008, 2012)",
+              ylab = "# Medals",
+              beside = TRUE,
+              col = total_colors,
+              border = NA,
+              space = c(0.1,0.8),
+              ylim = y_lim_total,
+              las = 1)
 
-cols <- c("#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#ADCFFF", "#388BFF")
+legend("topleft", legend = c("Performance being host", "Performance being visitor"),
+       fill = c("#388BFF", "#ADCFFF"),
+       bty = "n",
+       inset = 0.03)
 
-hosts <- c("AUS", "GRE", "CHN", "GBR")
+text(x = bp_totals, y = array(total_medals), label = array(total_medals), pos = 3,
+     cex = 0.8, col = "#444444")
+```
 
-ylim <- c(0, 1.1*max(c(medals$AUS, medals$GRE, medals$CHN, medals$GBR)))
+## Hosting factor: Scores
+```{r, echo=FALSE}
+colors <- c("#DD4200", "#FF9155")
 
-# Graph countries with adjacent bars using rainbow colors
-bp <- barplot(as.matrix(medals[, hosts]), main="Total of medals (2000, 2004, 2008, 2012)", ylab = "# Medals", beside = TRUE, col = cols, border = NA, space = c(0.1,1), ylim = ylim)
+bp_scores <- barplot(rbind(home_factor, mean_away_factor),
+              main="Scores (Host x Away)",
+              ylab = "Score",
+              beside = TRUE,
+              col = colors,
+              border = NA,
+              space = c(0.1,1),
+              ylim = y_lim_score,
+              las = 1)
 
-legend("topleft", legend = c("Performance being host", "Performance being visitor"), fill = c("#388BFF", "#ADCFFF"), bty = "n", inset = 0.03)
+legend("topleft", legend = c("Host score", "Away score (mean)"), fill = colors, bty = "n",
+       inset = 0.03)
 
-text(x = bp, y = c(medals$AUS, medals$GRE, medals$CHN, medals$GBR), label = c(medals$AUS, medals$GRE, medals$CHN, medals$GBR), pos = 3, cex = 0.8, col = "#666666")
+text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = array(rbind(home_factor, mean_away_factor)), pos = 3, cex = 0.8, col = "#444444")
 ```
 
 ## Brazil's performance
@@ -55,9 +78,6 @@ bp2 <- barplot(t(as.matrix(medals_bra[, medals_header])), main = "Brazil medals 
 legend("topleft", legend = medals_header, fill = cols, bty = "n", inset = 0.03)
 
 text(x = bp2, y = medals_bra$gold + medals_bra$silver + medals_bra$bronze, label = medals_bra$gold + medals_bra$silver + medals_bra$bronze, pos = 3, cex = 0.8, col = "#666666")
-
-#population_bra <- read.table("bra-population.csv", header = T, sep="\t")
-#plot(population_bra$population, type="o", col="blue")
 
 ```
 
