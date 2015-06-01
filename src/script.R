@@ -29,15 +29,15 @@ total_medals <- c()
 for(i in(1:last_n_games)) {
   k <- hosts[i]
   host_pos <- which(medals$Year==years[i])
-  host_pos_tail <- (-1)*(last_n_games - (nrow(medals)-host_pos))
+  host_pos_tail <- last_n_games - (nrow(medals)-host_pos)
   
   key_gold <- paste(k, "Gold", sep="..")
   key_silver <- paste(k, "Silver", sep="..")
   key_bronze <- paste(k, "Bronze", sep="..")
   
-  mean_away_factor <- cbind(mean_away_factor, mean(3*tail(medals[[key_gold]], last_n_games)[host_pos_tail] +
-                                  2*tail(medals[[key_silver]], last_n_games)[host_pos_tail] +
-                                  tail(medals[[key_bronze]], last_n_games)[host_pos_tail]))
+  mean_away_factor <- cbind(mean_away_factor, mean(3*tail(medals[[key_gold]], last_n_games)[-host_pos_tail] +
+                                  2*tail(medals[[key_silver]], last_n_games)[-host_pos_tail] +
+                                  tail(medals[[key_bronze]], last_n_games)[-host_pos_tail]))
   
   home_factor <- cbind(home_factor, 3*medals[[key_gold]][host_pos] +
     2*medals[[key_silver]][host_pos] +

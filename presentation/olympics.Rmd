@@ -38,13 +38,14 @@ total_medals
 ```
 
 ## Hosting factor
+### Mean away score
 ```{r eval=FALSE}
 # mean away score for last 6 games 
 mean_away_factor <- cbind(mean_away_factor,
   mean(
-    3*tail(medals[[key_gold]], 6)[host_pos_tail] +
-    2*tail(medals[[key_silver]], 6)[host_pos_tail] +
-    tail(medals[[key_bronze]], 6)[host_pos_tail]
+    3*tail(medals[[key_gold]], 6)[-host_pos_tail] +
+    2*tail(medals[[key_silver]], 6)[-host_pos_tail] +
+    tail(medals[[key_bronze]], 6)[-host_pos_tail]
   ))
 ```
 ```{r echo=FALSE}
@@ -52,6 +53,7 @@ mean_away_factor
 ```
 
 ## Hosting factor
+### Home score
 ```{r eval=FALSE}
 # home score for last 6 games 
 home_factor <- cbind(home_factor,
@@ -94,7 +96,7 @@ text(x = bp_totals, y = array(total_medals), label = array(total_medals), pos = 
 colors <- c("#DD4200", "#FF9155")
 
 bp_scores <- barplot(rbind(home_factor, mean_away_factor),
-              main="Scores (Host x Away)",
+              main="Scores (Home x Away)",
               ylab = "Score",
               beside = TRUE,
               col = colors,
@@ -103,7 +105,7 @@ bp_scores <- barplot(rbind(home_factor, mean_away_factor),
               ylim = y_lim_score,
               las = 1)
 
-legend("topleft", legend = c("Host score", "Away score (mean)"), fill = colors, bty = "n",
+legend("topleft", legend = c("Home score", "Away score (mean)"), fill = colors, bty = "n",
        inset = 0.03)
 
 text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = array(rbind(home_factor, mean_away_factor)), pos = 3, cex = 0.8, col = "#444444")
@@ -170,7 +172,7 @@ text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3
 
 ## Datasets
 
-For medals history:
+### Medals history
 
 - Data Market
     - https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games
@@ -181,7 +183,7 @@ For medals history:
 - Sports Reference
     - http://www.sports-reference.com/olympics/
 
-For country indicators:
+### Country indicators
 
 - The World Bank
     - http://data.worldbank.org
