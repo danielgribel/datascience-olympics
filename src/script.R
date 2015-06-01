@@ -43,9 +43,9 @@ for(i in(1:last_n_games)) {
     2*medals[[key_silver]][host_pos] +
     medals[[key_bronze]][host_pos])
   
-  total_medals <- cbind(total_medals, (tail(medals[[key_gold]], last_n_games) + 
+  total_medals <- cbind(total_medals, tail(medals[[key_gold]], last_n_games) + 
                                          tail(medals[[key_silver]], last_n_games) + 
-                                         tail(medals[[key_bronze]], last_n_games)))
+                                         tail(medals[[key_bronze]], last_n_games))
 }
 
 # replacing "." by " " (original dataset comes with ".")
@@ -70,15 +70,15 @@ bra_gold_perc <- bra_gold_totals/sum_bra_medals
 bra_silver_perc <- bra_silver_totals/sum_bra_medals
 bra_bronze_perc <- bra_bronze_totals/sum_bra_medals
 
-mean_bra_score <- mean(bra_score)
-
 # ratio: mean between home factor and mean away factor
 r <- mean(home_factor/mean_away_factor)
 
 # predicting BRA score
-pred_bra_score <- mean_bra_score * r
+pred_bra_score <- mean(bra_score) * r
 
 # predicting BRA medals distribution
 pred_bra_gold <- round(bra_gold_perc*pred_bra_score)
 pred_bra_silver <- round(bra_silver_perc*pred_bra_score)
 pred_bra_bronze <- round(bra_bronze_perc*pred_bra_score)
+
+pred_bra <- cbind(pred_bra_gold, pred_bra_silver, pred_bra_bronze)

@@ -1,30 +1,76 @@
 ---
-title: Olympic games medals prediction
-author: Daniel Gribel and Joao Paulo Forny
+title: "Olympic games medals prediction"
+author: "Daniel Gribel and Joao Paulo Forny"
 date: \today
 output:
   beamer_presentation:
     colortheme: default
     fonttheme: default
     theme: default
-  ioslides_presentation: default
 subtitle: Predicting host country performance
 ---
 
 ## Model
 
 - Medals history
+    - **80's problem**: USSR, East/West Germany
 - Hosting factor
 - Performance analysis on recent competitions
 - Number of athletes participating
-- Population (total and growth rate) -- also check "population pyramids" evolution
-- GDP (total, per capita and growth rate)
-- Economic freedom
+- Population (total and growth rate)
+    - "Population pyramids" evolution
+- GDP (total, per capita and growth rate) and economic freedom
 - Sports investment *
+
+## Total of medals (1992 -- 2012)
+```{r echo=FALSE}
+source("~/PUC-MSc/datascience/olympics/src/script.R")
+```
+```{r eval=FALSE}
+# total of medals for last 6 games 
+total_medals <- cbind(total_medals,
+    tail(medals[[key_gold]], 6) + 
+    tail(medals[[key_silver]], 6) + 
+    tail(medals[[key_bronze]], 6))
+```
+```{r echo=FALSE}
+total_medals
+```
+
+## Hosting factor
+```{r eval=FALSE}
+# mean away score for last 6 games 
+mean_away_factor <- cbind(mean_away_factor,
+  mean(
+    3*tail(medals[[key_gold]], 6)[host_pos_tail] +
+    2*tail(medals[[key_silver]], 6)[host_pos_tail] +
+    tail(medals[[key_bronze]], 6)[host_pos_tail]
+  ))
+```
+```{r echo=FALSE}
+mean_away_factor
+```
+
+## Hosting factor
+```{r eval=FALSE}
+# home score for last 6 games 
+home_factor <- cbind(home_factor,
+    3*medals[[key_gold]][host_pos] +
+    2*medals[[key_silver]][host_pos] +
+    medals[[key_bronze]][host_pos])
+```
+```{r echo=FALSE}
+home_factor
+```
+
+## Hosting factor
+```{r}
+home_factor/mean_away_factor
+mean(home_factor/mean_away_factor)
+```
 
 ## Hosting factor: Total of medals
 ```{r, echo=FALSE}
-source("~/PUC-MSc/datascience/olympics/src/script.R")
 bp_totals <- barplot(total_medals, main="Total of medals (1992, 1996, 2000, 2004, 2008, 2012)",
               ylab = "# Medals",
               beside = TRUE,
@@ -67,18 +113,45 @@ text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = arr
 ```{r, echo=FALSE}
 medals_bra <- read.table("../dataset/bra-medals.csv", header = T, sep="\t")
 
-cols <- c("#E0D910", "#C8C8C8", "#C7872E")
+color_medals <- c("#E0D910", "#C8C8C8", "#C7872E")
 
 medals_header <- c("gold", "silver", "bronze")
 
 ylim <- c(0, 1.1*max(medals_bra$gold + medals_bra$silver + medals_bra$bronze))
 
-bp2 <- barplot(t(as.matrix(medals_bra[, medals_header])), main = "Brazil medals distribution (1920 - 2012)", ylab = "# Medals", beside = FALSE, col = cols, border = NA, space = 0.2, names.arg = medals_bra$year, las = 2, ylim = ylim)
+bp2 <- barplot(t(as.matrix(medals_bra[, medals_header])), main = "Brazil medals distribution (1920 - 2012)", ylab = "# Medals", beside = FALSE, col = color_medals, border = NA, space = 0.2, names.arg = medals_bra$year, las = 2, ylim = ylim)
 
-legend("topleft", legend = medals_header, fill = cols, bty = "n", inset = 0.03)
+legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset = 0.03)
 
 text(x = bp2, y = medals_bra$gold + medals_bra$silver + medals_bra$bronze, label = medals_bra$gold + medals_bra$silver + medals_bra$bronze, pos = 3, cex = 0.8, col = "#666666")
 
+```
+
+## Our first prediction for Brazil medals distribution...
+```{r, eval=FALSE}
+bra_score <- 
+  3*tail(medals$Brazil..Gold, 6) +
+  2*tail(medals$Brazil..Silver, 6) +
+  tail(medals$Brazil..Bronze, 6)
+
+# ratio: mean between home factor and mean away factor
+r <- mean(home_factor/mean_away_factor)
+
+# predicting BRA score
+pred_bra_score <- mean(bra_score) * r
+
+# predicting BRA medals distribution
+pred_bra_gold <- round(bra_gold_perc*pred_bra_score)
+pred_bra_silver <- round(bra_silver_perc*pred_bra_score)
+pred_bra_bronze <- round(bra_bronze_perc*pred_bra_score)
+```
+
+## Our first prediction for Brazil medals distribution...
+```{r, echo=FALSE}
+ylim_pred <- c(0, 1.2*max(pred_bra))
+bp_pred <- barplot(array(pred_bra), col = color_medals, border = NA, ylim = ylim_pred, axes=FALSE)
+legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset = 0.03)
+text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3.5, col = "#999999")
 ```
 
 ## Possible achievements
@@ -99,13 +172,16 @@ text(x = bp2, y = medals_bra$gold + medals_bra$silver + medals_bra$bronze, label
 
 For medals history:
 
+- Data Market
+    - https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games
+
 - The Guardian Sport Datablog (~30K medals entries)
-    + http://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
+    - http://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
 
 - Sports Reference
-    + http://www.sports-reference.com/olympics/
+    - http://www.sports-reference.com/olympics/
 
 For country indicators:
 
 - The World Bank
-    + http://data.worldbank.org
+    - http://data.worldbank.org
