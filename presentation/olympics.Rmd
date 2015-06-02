@@ -22,6 +22,38 @@ subtitle: Predicting host country performance
 - GDP (total, per capita and growth rate) and economic freedom
 - Sports investment *
 
+## Possible achievements
+
+- Predict medals table for the host country
+    + How many medals will Brazil win in Rio'2016?
+    + What about medals distribution (gold, silver, bronze)?
+    + Is it possible to extend such analysis in order to discriminate predictions for specific sports?
+- Investigate hosting factor
+    + How does hosting factor effectively contributes for performance improvement?
+- Explore visualization mechanisms that may bring some insights
+
+## Validation
+
+- Compare prediction results with past olympic games (2012, 2008, 2004, ...), by shifting datasets in time
+
+## Datasets
+
+### Medals history
+
+- Data Market
+    - https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games
+
+- The Guardian Sport Datablog (~30K medals entries)
+    - http://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
+
+- Sports Reference
+    - http://www.sports-reference.com/olympics/
+
+### Country indicators
+
+- The World Bank
+    - http://data.worldbank.org
+
 ## Total of medals (1992 -- 2012)
 ```{r echo=FALSE}
 source("~/PUC-MSc/datascience/olympics/src/script.R")
@@ -37,6 +69,26 @@ total_medals <- cbind(total_medals,
 rownames(total_medals) <- paste(years, hosts_acronym)
 colnames(total_medals) <- hosts_acronym
 total_medals
+```
+
+## Total of medals (1992 -- 2012)
+```{r, echo=FALSE}
+bp_totals <- barplot(total_medals, main="Total of medals (1992, 1996, 2000, 2004, 2008, 2012)",
+              ylab = "# Medals",
+              beside = TRUE,
+              col = total_colors,
+              border = NA,
+              space = c(0.1,0.8),
+              ylim = y_lim_total,
+              las = 1)
+
+legend("topleft", legend = c("Performance being host", "Performance being visitor"),
+       fill = c("#388BFF", "#ADCFFF"),
+       bty = "n",
+       inset = 0.03)
+
+text(x = bp_totals, y = array(total_medals), label = array(total_medals), pos = 3,
+     cex = 0.8, col = "#444444")
 ```
 
 ## Hosting factor
@@ -70,37 +122,6 @@ home_factor
 ```
 
 ## Hosting factor
-```{r eval=FALSE}
-home_factor/mean_away_factor
-```
-```{r echo=FALSE}
-round(home_factor/mean_away_factor, 4)
-```
-```{r}
-mean(home_factor/mean_away_factor)
-```
-
-## Hosting factor: Total of medals
-```{r, echo=FALSE}
-bp_totals <- barplot(total_medals, main="Total of medals (1992, 1996, 2000, 2004, 2008, 2012)",
-              ylab = "# Medals",
-              beside = TRUE,
-              col = total_colors,
-              border = NA,
-              space = c(0.1,0.8),
-              ylim = y_lim_total,
-              las = 1)
-
-legend("topleft", legend = c("Performance being host", "Performance being visitor"),
-       fill = c("#388BFF", "#ADCFFF"),
-       bty = "n",
-       inset = 0.03)
-
-text(x = bp_totals, y = array(total_medals), label = array(total_medals), pos = 3,
-     cex = 0.8, col = "#444444")
-```
-
-## Hosting factor: Scores
 ```{r, echo=FALSE}
 colors <- c("#DD4200", "#FF9155")
 
@@ -118,6 +139,17 @@ legend("topleft", legend = c("Home score", "Away score (mean)"), fill = colors, 
        inset = 0.03)
 
 text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = array(rbind(home_factor, mean_away_factor)), pos = 3, cex = 0.8, col = "#444444")
+```
+
+## Hosting factor
+```{r eval=FALSE}
+home_factor/mean_away_factor
+```
+```{r echo=FALSE}
+round(home_factor/mean_away_factor, 4)
+```
+```{r}
+mean(home_factor/mean_away_factor)
 ```
 
 ## Brazil's performance
@@ -164,35 +196,3 @@ bp_pred <- barplot(array(pred_bra), col = color_medals, border = NA, ylim = ylim
 legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset = 0.03)
 text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3.5, col = "#999999")
 ```
-
-## Possible achievements
-
-- Predict medals table for the host country
-    + How many medals will Brazil win in Rio'2016?
-    + What about medals distribution (gold, silver, bronze)?
-    + Is it possible to extend such analysis in order to discriminate predictions for specific sports?
-- Investigate hosting factor
-    + How does hosting factor effectively contributes for performance improvement?
-- Explore visualization mechanisms that may bring some insights
-
-## Validation
-
-- Compare prediction results with past olympic games (2012, 2008, 2004, ...), by shifting datasets in time
-
-## Datasets
-
-### Medals history
-
-- Data Market
-    - https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games
-
-- The Guardian Sport Datablog (~30K medals entries)
-    - http://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
-
-- Sports Reference
-    - http://www.sports-reference.com/olympics/
-
-### Country indicators
-
-- The World Bank
-    - http://data.worldbank.org
