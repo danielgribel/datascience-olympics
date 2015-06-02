@@ -37,5 +37,5 @@ for(year in years) {
   }
 }
 
-write.csv(ggfconsolidated, file = "MyData.csv")
-print(ggfconsolidated)
+# write.csv(ggfconsolidated, file = "MyData.csv")
+# print(ggfconsolidated)
