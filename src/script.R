@@ -5,6 +5,7 @@ medals <- read.table("~/PUC-MSc/datascience/olympics/dataset/medals.tsv",
                      stringsAsFactors = FALSE)
 
 hosts <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
+hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
 years <- c(1992, 1996, 2000, 2004, 2008, 2012)
 
 # remove last row
@@ -47,11 +48,6 @@ for(i in(1:last_n_games)) {
                                          tail(medals[[key_silver]], last_n_games) + 
                                          tail(medals[[key_bronze]], last_n_games))
 }
-
-# replacing "." by " " (original dataset comes with ".")
-colnames(total_medals) <- gsub("[.]", " ", hosts)
-colnames(mean_away_factor) <- gsub("[.]", " ", hosts)
-colnames(home_factor) <- gsub("[.]", " ", hosts)
 
 y_lim_total <- c(0, 1.2*max(total_medals))
 y_lim_score <- c(0, 1.2*max(home_factor))

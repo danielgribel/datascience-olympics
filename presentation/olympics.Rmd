@@ -34,6 +34,8 @@ total_medals <- cbind(total_medals,
     tail(medals[[key_bronze]], 6))
 ```
 ```{r echo=FALSE}
+rownames(total_medals) <- paste(years, hosts_acronym)
+colnames(total_medals) <- hosts_acronym
 total_medals
 ```
 
@@ -49,6 +51,7 @@ mean_away_factor <- cbind(mean_away_factor,
   ))
 ```
 ```{r echo=FALSE}
+colnames(mean_away_factor) <- hosts_acronym
 mean_away_factor
 ```
 
@@ -62,12 +65,18 @@ home_factor <- cbind(home_factor,
     medals[[key_bronze]][host_pos])
 ```
 ```{r echo=FALSE}
+colnames(home_factor) <- hosts_acronym
 home_factor
 ```
 
 ## Hosting factor
-```{r}
+```{r eval=FALSE}
 home_factor/mean_away_factor
+```
+```{r echo=FALSE}
+round(home_factor/mean_away_factor, 4)
+```
+```{r}
 mean(home_factor/mean_away_factor)
 ```
 
