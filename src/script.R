@@ -73,8 +73,17 @@ r <- mean(home_factor/mean_away_factor)
 pred_bra_score <- mean(bra_score) * r
 
 # predicting BRA medals distribution
-pred_bra_gold <- round(bra_gold_perc*pred_bra_score)
-pred_bra_silver <- round(bra_silver_perc*pred_bra_score)
-pred_bra_bronze <- round(bra_bronze_perc*pred_bra_score)
+p <- pred_bra_score*(1/3) + pred_bra_score*(1/6) + pred_bra_score*(1/9)
+pred_bra_gold <- round(bra_gold_perc*p)
+pred_bra_silver <- round(bra_silver_perc*p)
+pred_bra_bronze <- round(bra_bronze_perc*p)
 
 pred_bra <- cbind(pred_bra_gold, pred_bra_silver, pred_bra_bronze)
+
+#end <- 27
+#for(i in(1:6)) {
+#  print(
+#    (3*medals$Brazil..Gold[end]+2*medals$Brazil..Silver[end]+medals$Brazil..Bronze[end])/
+#    (3*medals$Brazil..Gold[end-1]+2*medals$Brazil..Silver[end-1]+medals$Brazil..Bronze[end-1])-1)
+#    end <- end-1
+#}

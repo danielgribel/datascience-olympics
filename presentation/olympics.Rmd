@@ -13,14 +13,14 @@ subtitle: Predicting host country performance
 ## Model
 
 - Medals history
-    - **80's problem**: USSR, East/West Germany
+    - \textcolor{red}{80's problem: USSR, East/West Germany}
 - Hosting factor
-- Performance analysis on recent competitions
+- \textcolor{blue}{Performance analysis on recent competitions}
 - Number of athletes participating
 - Population (total and growth rate)
     - "Population pyramids" evolution
 - GDP (total, per capita and growth rate) and economic freedom
-- Sports investment *
+- \textcolor{red}{Sports investment}
 
 ## Possible achievements
 
@@ -184,9 +184,11 @@ r <- mean(home_factor/mean_away_factor)
 pred_bra_score <- mean(bra_score) * r
 
 # predicting BRA medals distribution
-pred_bra_gold <- round(bra_gold_perc*pred_bra_score)
-pred_bra_silver <- round(bra_silver_perc*pred_bra_score)
-pred_bra_bronze <- round(bra_bronze_perc*pred_bra_score)
+p <- pred_bra_score*(1/3) + pred_bra_score*(1/6) +
+  pred_bra_score*(1/9)
+pred_bra_gold <- round(bra_gold_perc*p)
+pred_bra_silver <- round(bra_silver_perc*p)
+pred_bra_bronze <- round(bra_bronze_perc*p)
 ```
 
 ## Our first prediction for Brazil medals distribution...
@@ -196,3 +198,9 @@ bp_pred <- barplot(array(pred_bra), col = color_medals, border = NA, ylim = ylim
 legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset = 0.03)
 text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3.5, col = "#999999")
 ```
+
+## GDP
+- Analyze correlation between GDP growth and medal growth.
+    - % of GDP growth should be relative: mean of GDP growth for last 4 years / mean of global GDP growth
+    - % of medal growth: (medal count / medal count 4 years ago) - 1
+- Fit in a regression model if correlation is observed.
