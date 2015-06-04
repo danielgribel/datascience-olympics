@@ -4,16 +4,21 @@ medals <- read.table("~/PUC-MSc/datascience/olympics/dataset/medals.tsv",
                      fill = TRUE,
                      stringsAsFactors = FALSE)
 
-hosts <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
-hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
-years <- c(1992, 1996, 2000, 2004, 2008, 2012)
-
 # remove last row
 medals <- medals[ -nrow(medals), ]
 # replace NA by 0
 medals[is.na(medals)] <- 0
 
-last_n_games <- length(hosts)
+hosts <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
+hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
+years <- c()
+
+last_n_games <- 6
+j <- 1
+for(i in (last_n_games-1):0) {
+  years[j] <- 2012 - 4*i
+  j <- j+1
+}
 
 # define colors for total medals chart
 total_colors <- rep("#ADCFFF", times = last_n_games*last_n_games)
@@ -80,10 +85,19 @@ pred_bra_bronze <- round(bra_bronze_perc*p)
 
 pred_bra <- cbind(pred_bra_gold, pred_bra_silver, pred_bra_bronze)
 
-#end <- 27
-#for(i in(1:6)) {
-#  print(
-#    (3*medals$Brazil..Gold[end]+2*medals$Brazil..Silver[end]+medals$Brazil..Bronze[end])/
-#    (3*medals$Brazil..Gold[end-1]+2*medals$Brazil..Silver[end-1]+medals$Brazil..Bronze[end-1])-1)
-#    end <- end-1
-#}
+# medals ratio, year by year (1992--2012)
+y <- 1992
+medals_ratio <- c()
+for(i in(1:6)) {
+  medals_ratio <- rbind(medals_ratio,
+    (3*medals$Brazil..Gold[which(medals$Year==y)]+
+       2*medals$Brazil..Silver[which(medals$Year==y)]+
+       medals$Brazil..Bronze[which(medals$Year==y)])/
+    (3*medals$Brazil..Gold[which(medals$Year==y-4)]+
+       2*medals$Brazil..Silver[which(medals$Year==y-4)]+
+       medals$Brazil..Bronze[which(medals$Year==y-4)])-1
+  )
+  y <- y+4
+}
+
+rownames(medals_ratio) <- years
