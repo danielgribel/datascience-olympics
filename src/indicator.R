@@ -15,16 +15,6 @@ ind <- head(ind, -6)
 
 world_mean_ind <- c()
 years <- c()
-#ct_keys <- c()
-#k <- 1
-#for(w in colnames(gdp)[-1]) {
-#  s <- gsub("\\.\\.", " ", w)
-#  s <- gsub("\\.", "", s)
-#  s <- unlist(strsplit(s, " "))
-#  s <- s[length(s)]
-#  ct_keys[k] <- s
-#  k <- k+1
-#}
 
 # filling years with last K games
 last_n_games <- 6
@@ -35,7 +25,7 @@ for(i in (last_n_games-1):0) {
 }
 
 # calculate mean indicator considering all countries
-for(j in(1:length(years))) {
+for(j in(1:last_n_games)) {
   world_mean_ind <- rbind(world_mean_ind,
                     rowMeans(ind[which(ind$Time >= (years[j]-3) & ind$Time <= years[j]),][-c(1)],
                     na.rm=TRUE))
@@ -44,7 +34,7 @@ for(j in(1:length(years))) {
 # calculate indicator for a country considering past 4 years for each year in period
 country_ind_growth <- function(years, country) {
   country_ind <- c()
-  for(i in(1:length(years))) {
+  for(i in(1:last_n_games)) {
     country_ind <- rbind(country_ind,
                    rowMeans(ind[which(ind$Time >= (years[i]-3) & ind$Time <= years[i]),][which(colnames(ind)==country)],
                             na.rm=TRUE))

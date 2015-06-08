@@ -85,9 +85,9 @@ pred_bra <- cbind(pred_bra_gold, pred_bra_silver, pred_bra_bronze)
 
 # medals ratio, year by year (1992--2012)
 country_medals_ratio <- function(country) {
-  y <- 1992
+  y <- years[1]
   medals_ratio <- c()
-  for(i in(1:6)) {
+  for(i in(1:length(years))) {
     medals_ratio <- rbind(medals_ratio,
                     (3*medals[[paste(country, "Gold", sep="..")]][which(medals$Year==y)]+
                        2*medals[[paste(country, "Silver", sep="..")]][which(medals$Year==y)]+
