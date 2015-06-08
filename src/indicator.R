@@ -1,22 +1,32 @@
 # edit this source to change indicator dataset
-source_file <- "~/PUC-MSc/datascience/olympics/dataset/gdp_growth.csv"
+source_gdp_growth <- "~/PUC-MSc/datascience/olympics/dataset/gdp_growth.csv"
 
-gdp <- read.csv(source_file, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
+ind <- read.csv(source_gdp_growth, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
 
 # removing unnecessary columns
-gdp <- subset(gdp, select = -Series.Name)
-gdp <- subset(gdp, select = -Series.Code)
-gdp <- subset(gdp, select = -Time.Code)
+ind <- subset(ind, select = -Series.Name)
+ind <- subset(ind, select = -Series.Code)
+ind <- subset(ind, select = -Time.Code)
 
 # removing 1960 -- everything is blank
-gdp <- gdp[-1, ]
+ind <- ind[-1, ]
 # removing last rows -- blank or not important
-gdp <- head(gdp, -6)
+ind <- head(ind, -6)
 
-world_mean_gdp <- c()
-bra_gdp <- c()
+world_mean_ind <- c()
 years <- c()
+#ct_keys <- c()
+#k <- 1
+#for(w in colnames(gdp)[-1]) {
+#  s <- gsub("\\.\\.", " ", w)
+#  s <- gsub("\\.", "", s)
+#  s <- unlist(strsplit(s, " "))
+#  s <- s[length(s)]
+#  ct_keys[k] <- s
+#  k <- k+1
+#}
 
+# filling years with last K games
 last_n_games <- 6
 j <- 1
 for(i in (last_n_games-1):0) {
@@ -24,22 +34,31 @@ for(i in (last_n_games-1):0) {
   j <- j+1
 }
 
+# calculate mean indicator considering all countries
 for(j in(1:length(years))) {
-  for(i in (2:length(colnames(gdp)))) {
-    country_key <- colnames(gdp)[i]
-  }
-  world_mean_gdp <- rbind(world_mean_gdp,
-                    rowMeans(gdp[which(gdp$Time >= (years[j]-3) & gdp$Time <= years[j]),][-c(1, which(colnames(gdp)=="Brazil..BRA."))],
+  world_mean_ind <- rbind(world_mean_ind,
+                    rowMeans(ind[which(ind$Time >= (years[j]-3) & ind$Time <= years[j]),][-c(1)],
                     na.rm=TRUE))
 }
 
-for(j in(1:length(years))) {
-  bra_gdp <- rbind(bra_gdp,
-              rowMeans(gdp[which(gdp$Time >= (years[j]-3) & gdp$Time <= years[j]),][which(colnames(gdp)=="Brazil..BRA.")],
-              na.rm=TRUE))
+# calculate indicator for a country considering past 4 years for each year in period
+country_ind_growth <- function(years, country) {
+  country_ind <- c()
+  for(i in(1:length(years))) {
+    country_ind <- rbind(country_ind,
+                   rowMeans(ind[which(ind$Time >= (years[i]-3) & ind$Time <= years[i]),][which(colnames(ind)==country)],
+                            na.rm=TRUE))
+  }
+  return(country_ind)
 }
 
-rownames(world_mean_gdp) <- years
-rownames(bra_gdp) <- years
-colnames(world_mean_gdp) <- c(1, 2, 3, 4)
-colnames(bra_gdp) <- c(1, 2, 3, 4)
+# calculate indicator factor -- ratio between country mean indicator and global mean for each year in period
+ind_factor <- c()
+for(ct in colnames(ind)[-1]) {
+  ind_factor <- rbind(ind_factor, rowMeans(country_ind_growth(years, ct))/rowMeans(world_mean_ind))
+}
+colnames(ind_factor) <- years
+rownames(ind_factor) <- colnames(ind)[-1]
+
+rownames(world_mean_ind) <- years
+colnames(world_mean_ind) <- c(1, 2, 3, 4)

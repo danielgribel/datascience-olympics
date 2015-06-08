@@ -1,8 +1,6 @@
-medals <- read.table("~/PUC-MSc/datascience/olympics/dataset/medals.tsv",
-                     header = T,
-                     sep = "\t",
-                     fill = TRUE,
-                     stringsAsFactors = FALSE)
+source_medals <- "~/PUC-MSc/datascience/olympics/dataset/medals.tsv"
+
+medals <- read.table(source_medals, header = T, sep = "\t", fill = TRUE, stringsAsFactors = FALSE)
 
 # remove last row
 medals <- medals[ -nrow(medals), ]
@@ -86,18 +84,20 @@ pred_bra_bronze <- round(bra_bronze_perc*p)
 pred_bra <- cbind(pred_bra_gold, pred_bra_silver, pred_bra_bronze)
 
 # medals ratio, year by year (1992--2012)
-y <- 1992
-medals_ratio <- c()
-for(i in(1:6)) {
-  medals_ratio <- rbind(medals_ratio,
-    (3*medals$Brazil..Gold[which(medals$Year==y)]+
-       2*medals$Brazil..Silver[which(medals$Year==y)]+
-       medals$Brazil..Bronze[which(medals$Year==y)])/
-    (3*medals$Brazil..Gold[which(medals$Year==y-4)]+
-       2*medals$Brazil..Silver[which(medals$Year==y-4)]+
-       medals$Brazil..Bronze[which(medals$Year==y-4)])-1
-  )
-  y <- y+4
+country_medals_ratio <- function(country) {
+  y <- 1992
+  medals_ratio <- c()
+  for(i in(1:6)) {
+    medals_ratio <- rbind(medals_ratio,
+                    (3*medals[[paste(country, "Gold", sep="..")]][which(medals$Year==y)]+
+                       2*medals[[paste(country, "Silver", sep="..")]][which(medals$Year==y)]+
+                       medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y)])/
+                    (3*medals[[paste(country, "Gold", sep="..")]][which(medals$Year==y-4)]+
+                       2*medals[[paste(country, "Silver", sep="..")]][which(medals$Year==y-4)]+
+                       medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y-4)])-1)
+    y <- y+4
+  }
+  return(medals_ratio)
 }
 
-rownames(medals_ratio) <- years
+bra_medals_ratio <- country_medals_ratio("Brazil")
