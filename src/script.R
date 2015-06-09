@@ -99,3 +99,11 @@ country_medals_ratio <- function(country) {
   }
   return(medals_ratio)
 }
+
+# loading indicator script
+cor_gdp <- c()
+source("~/PUC-MSc/datascience/olympics/src/indicator.R")
+for(c in hosts) {
+  cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c), ind_factor[c,]))
+}
+colnames(cor_gdp) <- hosts
