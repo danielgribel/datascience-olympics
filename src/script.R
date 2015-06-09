@@ -99,5 +99,3 @@ country_medals_ratio <- function(country) {
   }
   return(medals_ratio)
 }
-
-bra_medals_ratio <- country_medals_ratio("Brazil")

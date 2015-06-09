@@ -24,6 +24,12 @@ for(i in (last_n_games-1):0) {
   j <- j+1
 }
 
+# renaming country names
+colnames(ind)[-1] <- gsub("\\.\\.\\.", ".", colnames(ind)[-1])
+colnames(ind)[-1] <- gsub("\\.\\.", ".", colnames(ind)[-1])
+colnames(ind)[-1] <- substr(colnames(ind)[-1], 1, nchar(colnames(ind)[-1])-5)
+colnames(ind)[which(colnames(ind)=="United.Kingdom")] <- "Great.Britain"
+
 # calculate mean indicator considering all countries
 for(j in(1:last_n_games)) {
   world_mean_ind <- rbind(world_mean_ind,
