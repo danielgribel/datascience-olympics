@@ -204,3 +204,29 @@ text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3
     - % of GDP growth should be relative: mean of GDP growth for last 4 years / mean of global GDP growth
     - % of medal growth: (medal count / medal count 4 years ago) - 1
 - Fit in a regression model if correlation is observed.
+
+## Correlation: Medals score x GDP
+**Correlation coefficient** of two variables: their covariance divided by the product of their individual standard deviations. It is a normalized measurement of how the two are linearly related.
+
+1: variables are positively linearly related
+
+-1: variables are negatively linearly related
+
+```{r echo=FALSE}
+cor <- round(cor_gdp, 4)
+cor_bra <- round(cor(country_medals_ratio("Brazil"), ind_factor["Brazil",]), 4)
+colnames(cor) <- hosts_acronym
+colnames(cor_bra) <- "BRA"
+```
+```{r eval=FALSE}
+cor_gdp
+```
+```{r echo=FALSE}
+cor
+```
+```{r eval=FALSE}
+cor_gdp_bra
+```
+```{r echo=FALSE}
+cor_bra
+```
