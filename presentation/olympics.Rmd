@@ -117,7 +117,7 @@ home_factor <- cbind(home_factor,
     medals[[key_bronze]][host_pos])
 ```
 ```{r echo=FALSE}
-colnames(home_factor) <- hosts_acronym
+#colnames(home_factor) <- hosts_acronym
 home_factor
 ```
 
@@ -184,8 +184,7 @@ r <- mean(home_factor/mean_away_factor)
 pred_bra_score <- mean(bra_score) * r
 
 # predicting BRA medals distribution
-p <- pred_bra_score*(1/3) + pred_bra_score*(1/6) +
-  pred_bra_score*(1/9)
+p <- pred_bra_score/3 + pred_bra_score/6 + pred_bra_score/9
 pred_bra_gold <- round(bra_gold_perc*p)
 pred_bra_silver <- round(bra_silver_perc*p)
 pred_bra_bronze <- round(bra_bronze_perc*p)
@@ -213,20 +212,14 @@ text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3
 -1: variables are negatively linearly related
 
 ```{r echo=FALSE}
-cor <- round(cor_gdp, 4)
-cor_bra <- round(cor(country_medals_ratio("Brazil"), ind_factor["Brazil",]), 4)
-colnames(cor) <- hosts_acronym
-colnames(cor_bra) <- "BRA"
+cor_gdp_hosts <- round(subset(cor_gdp, select = hosts), 4)
+cor_gdp_bra <- round(cor(country_medals_ratio("Brazil"), ind_factor["Brazil",]), 4)
+colnames(cor_gdp_hosts) <- hosts_acronym
+colnames(cor_gdp_bra) <- "BRA"
 ```
-```{r eval=FALSE}
-cor_gdp
+```{r}
+cor_gdp_hosts
 ```
-```{r echo=FALSE}
-cor
-```
-```{r eval=FALSE}
+```{r}
 cor_gdp_bra
-```
-```{r echo=FALSE}
-cor_bra
 ```

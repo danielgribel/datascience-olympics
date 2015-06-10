@@ -94,7 +94,7 @@ country_medals_ratio <- function(country) {
                        medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y)])/
                     (3*medals[[paste(country, "Gold", sep="..")]][which(medals$Year==y-4)]+
                        2*medals[[paste(country, "Silver", sep="..")]][which(medals$Year==y-4)]+
-                       medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y-4)])-1)
+                       medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y-4)]))
     y <- y+4
   }
   return(medals_ratio)
