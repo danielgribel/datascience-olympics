@@ -33,7 +33,7 @@ colnames(ind)[which(colnames(ind)=="United.Kingdom")] <- "Great.Britain"
 # calculate mean indicator considering all countries
 for(j in(1:last_n_games)) {
   world_mean_ind <- rbind(world_mean_ind,
-                    rowMeans(ind[which(ind$Time >= (years[j]-3) & ind$Time <= years[j]),][-c(1)],
+                    rowMeans(ind[which(ind$Time >= (years[j]-4) & ind$Time <= years[j]-1),][-c(1)],
                     na.rm=TRUE))
 }
 
@@ -42,7 +42,7 @@ country_ind_growth <- function(years, country) {
   country_ind <- c()
   for(i in(1:last_n_games)) {
     country_ind <- rbind(country_ind,
-                   rowMeans(ind[which(ind$Time >= (years[i]-3) & ind$Time <= years[i]),][which(colnames(ind)==country)],
+                   rowMeans(ind[which(ind$Time >= (years[i]-4) & ind$Time <= years[i]-1),][which(colnames(ind)==country)],
                             na.rm=TRUE))
   }
   return(country_ind)
@@ -51,10 +51,8 @@ country_ind_growth <- function(years, country) {
 # calculate indicator factor -- ratio between country mean indicator and global mean for each year in period
 ind_factor <- c()
 for(ct in colnames(ind)[-1]) {
-  ind_factor <- rbind(ind_factor, rowMeans(country_ind_growth(years, ct))/rowMeans(world_mean_ind))
+  ind_factor <- rbind(ind_factor, rowMeans(country_ind_growth(years, ct))-rowMeans(world_mean_ind))
 }
 colnames(ind_factor) <- years
 rownames(ind_factor) <- colnames(ind)[-1]
-
 rownames(world_mean_ind) <- years
-colnames(world_mean_ind) <- c(1, 2, 3, 4)

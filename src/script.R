@@ -30,7 +30,7 @@ home_factor <- c()
 mean_away_factor <- c()
 total_medals <- c()
 
-for(i in(1:last_n_games)) {
+for(i in(1:length(hosts))) {
   k <- hosts[i]
   host_pos <- which(medals$Year==years[i])
   host_pos_tail <- last_n_games - (nrow(medals)-host_pos)
@@ -76,7 +76,7 @@ r <- mean(home_factor/mean_away_factor)
 pred_bra_score <- mean(bra_score) * r
 
 # predicting BRA medals distribution
-p <- pred_bra_score*(1/3) + pred_bra_score*(1/6) + pred_bra_score*(1/9)
+p <- pred_bra_score/3 + pred_bra_score/6 + pred_bra_score/9
 pred_bra_gold <- round(bra_gold_perc*p)
 pred_bra_silver <- round(bra_silver_perc*p)
 pred_bra_bronze <- round(bra_bronze_perc*p)
@@ -103,7 +103,18 @@ country_medals_ratio <- function(country) {
 # loading indicator script
 cor_gdp <- c()
 source("~/PUC-MSc/datascience/olympics/src/indicator.R")
-for(c in hosts) {
-  cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c), ind_factor[c,]))
+more_countries <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain",
+                    "France", "Canada", "Italy", "Japan", "Sweden", "Brazil", "Norway", "Finland",
+                    "Netherlands", "Switzerland", "Austria", "Romania", "Bulgaria", "Denmark", "Belgium")
+
+# medals x gdp correlation for hosts -- removing year which country was the host (host factor influences)
+for(c in more_countries) {
+  if(c %in% hosts) {
+    pos <- match(c, hosts)
+    cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c)[-pos], ind_factor[c,][-pos]))  
+  } else {
+    cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c), ind_factor[c,]))
+  }
 }
-colnames(cor_gdp) <- hosts
+
+colnames(cor_gdp) <- more_countries
