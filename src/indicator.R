@@ -1,5 +1,8 @@
 # edit this source to change indicator dataset
-source_gdp_growth <- "~/PUC-MSc/datascience/olympics/dataset/gdp_growth.csv"
+jforny <- "~/rstudio/OlympicsPrediction/"
+dgribel <- "~/PUC-MSc/datascience/olympics/"
+path <- dgribel
+source_gdp_growth <- paste(path, "dataset/gdp_growth.csv", sep = "")
 
 ind <- read.csv(source_gdp_growth, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
 
