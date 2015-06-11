@@ -223,3 +223,42 @@ cor_gdp_hosts
 ```{r}
 cor_gdp_bra
 ```
+
+## Projecting GDP: 2016 analysis
+```{r, echo=FALSE}
+yr <- c(1992:2013)
+world <- rowMeans(ind[which(ind$Time %in% yr),][-c(1, which(colnames(ind)=="Brazil"))],na.rm=TRUE)
+world <- c(world, c(3.38900, 3.45100))
+bra <- tail(ind$Brazil, length(yr))
+bra <- c(bra, c(0.14500, -1.02600))
+yr <- c(yr, c(2014, 2015))
+g_range <- range(0, world, bra)
+plot(world, type="o", col="blue", axes=FALSE, ann=TRUE, ylim=g_range, ylab = "GDP", xlab = "Years")
+lines(bra, type="o", pch=22, lty=1, col="red")
+axis(1, at=1:length(yr), lab=yr)
+axis(2, at=-5:10, las=1)
+title(main = "World mean GDP x Brazil GDP")
+legend("topleft", g_range[2], c("World mean GDP","Brazil GDP"), cex=0.8, col=c("blue","red"), pch=21:22, lty=1:2)
+
+addTrans <- function(color,trans) {
+  if (length(color)!=length(trans)&!any(c(length(color),length(trans))==1)) stop("Vector lengths not correct")
+  if (length(color)==1 & length(trans)>1) color <- rep(color,length(trans))
+  if (length(trans)==1 & length(color)>1) trans <- rep(trans,length(color))
+
+  num2hex <- function(x)
+  {
+    hex <- unlist(strsplit("0123456789ABCDEF",split=""))
+    return(paste(hex[(x-x%%16)/16+1],hex[x%%16+1],sep=""))
+  }
+  rgb <- rbind(col2rgb(color),trans)
+  res <- paste("#",apply(apply(rgb,2,num2hex),2,paste,collapse=""),sep="")
+  return(res)
+}
+lim <- par("usr")
+rect(length(yr)-3, lim[3]-1, length(yr), lim[4]+1, border=NA, col=addTrans("red", 50))
+box()
+```
+
+\tiny{* 2014 and 2015: forecasts}
+
+\tiny{Source: IMF World Economic Outlook (WEO), April 2015}
