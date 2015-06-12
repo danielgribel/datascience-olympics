@@ -1,4 +1,8 @@
-gdp <- read.table("~/PUC-MSc/datascience/olympics/dataset/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2.csv",
+jforny <- "~/rstudio/OlympicsPrediction/"
+dgribel <- "~/PUC-MSc/datascience/olympics/"
+path <- dgribel
+source_ gdp <- paste(path, "dataset/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2.csv", sep = "")
+gdp <- read.table(source_ gdp,
                   header = T,
                   skip = 1,
                   sep = ",",

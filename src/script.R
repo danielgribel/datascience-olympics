@@ -1,4 +1,7 @@
-source_medals <- "~/PUC-MSc/datascience/olympics/dataset/medals.tsv"
+jforny <- "~/rstudio/OlympicsPrediction/"
+dgribel <- "~/PUC-MSc/datascience/olympics/"
+path <- jforny
+source_medals <- paste(path, "dataset/medals.tsv", sep = "")
 
 medals <- read.table(source_medals, header = T, sep = "\t", fill = TRUE, stringsAsFactors = FALSE)
 
@@ -97,24 +100,55 @@ country_medals_ratio <- function(country) {
                        medals[[paste(country, "Bronze", sep="..")]][which(medals$Year==y-4)]))
     y <- y+4
   }
+  rownames(medals_ratio) <- years
   return(medals_ratio)
 }
 
 # loading indicator script
 cor_gdp <- c()
-source("~/PUC-MSc/datascience/olympics/src/indicator.R")
+source(paste(path, "src/indicator.R", sep = ""))
 more_countries <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain",
                     "France", "Canada", "Italy", "Japan", "Sweden", "Brazil", "Norway", "Finland",
                     "Netherlands", "Switzerland", "Austria", "Romania", "Bulgaria", "Denmark", "Belgium")
 
 # medals x gdp correlation for hosts -- removing year which country was the host (host factor influences)
+groupeddata <- data.frame("Country" = character(), "Year" = character(),  "GGF" = character(), "MGR" = character())
 for(c in more_countries) {
   if(c %in% hosts) {
     pos <- match(c, hosts)
-    cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c)[-pos], ind_factor[c,][-pos]))  
+    cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c)[-pos], ind_factor[c,][-pos]))
   } else {
     cor_gdp <- cbind(cor_gdp, cor(country_medals_ratio(c), ind_factor[c,]))
+  }
+  #Grouping data
+  for(year in years) {
+    groupeddata <- as.data.frame(rbind(as.matrix(groupeddata), c(c, year, ind_factor[c,toString(year)], country_medals_ratio(c)[toString(year),])))
   }
 }
 
 colnames(cor_gdp) <- more_countries
+
+#Removing hosts data
+groupeddata <- groupeddata[order(groupeddata$Year),]
+for(i in (1:length(hosts))) {
+   groupeddata <- groupeddata[!(groupeddata$Country == hosts[i] & groupeddata$Year == years[i]),]
+}
+
+#Prediction for Great.Britain
+gbindex <- which(hosts=="Great.Britain")
+britaindata <- groupeddata[!(groupeddata$Country != hosts[gbindex]),]
+
+as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+
+britaindata$MGR <- as.numeric.factor(britaindata$MGR)
+britaindata$GGF <- as.numeric.factor(britaindata$GGF)
+
+str(britaindata)
+
+plot(britaindata$MGR, britaindata$GGF)
+britainmodel <- lm(britaindata$MGR ~ britaindata$GGF)
+summary(britainmodel)
+
+# predictionModel <- predict(britainmodel)
+# plot(predictionModel)
+# predictionModel
