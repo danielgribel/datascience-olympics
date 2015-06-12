@@ -1,4 +1,4 @@
-gdp <- read.table("~/rstudio/Olympics\ Medal\ Table\ Prediction/dataset/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2.csv",
+gdp <- read.table("~/PUC-MSc/datascience/olympics/dataset/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2/ny.gdp.mktp.kd.zg_Indicator_en_csv_v2.csv",
                   header = T,
                   skip = 1,
                   sep = ",",
@@ -31,5 +31,5 @@ for(year in years) {
   }
 }
 
-write.csv(ggfconsolidated, file = "MyData.csv")
+#write.csv(ggfconsolidated, file = "MyData.csv")
 # print(ggfconsolidated)
