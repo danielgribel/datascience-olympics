@@ -19,7 +19,7 @@ ind <- head(ind, -6)
 years <- c()
 
 # filling years with last K games
-last_n_games <- 6
+last_n_games <- 7
 j <- 1
 for(i in (last_n_games-1):0) {
   years[j] <- 2012 - 4*i
