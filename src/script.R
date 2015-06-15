@@ -1,6 +1,6 @@
 jforny <- "~/rstudio/OlympicsPrediction/"
 dgribel <- "~/PUC-MSc/datascience/olympics/"
-path <- dgribel
+path <- jforny
 source_medals <- paste(path, "dataset/medals.tsv", sep = "")
 
 medals <- read.table(source_medals, header = T, sep = "\t", fill = TRUE, stringsAsFactors = FALSE)
@@ -10,11 +10,11 @@ medals <- medals[ -nrow(medals), ]
 # replace NA by 0
 medals[is.na(medals)] <- 0
 
-hosts <- c("South.Korea" , "Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
-# hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
+hosts <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
+hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
 years <- c()
 
-last_n_games <- 7
+last_n_games <- 6
 j <- 1
 for(i in (last_n_games-1):0) {
   years[j] <- 2012 - 4*i
@@ -162,7 +162,7 @@ groupeddata <- groupeddata[order(groupeddata$Year),]
 
 #Linear model for previous hosts
 hostLM <- function(host) {
-  hostIndex <- which(hosts=="China")
+  hostIndex <- which(hosts==host)
   hostData <- groupeddata[!(groupeddata$Country != hosts[hostIndex]),]
   hostGGF <- as.numeric(as.character(hostData[(hostData$Country == hosts[hostIndex] & hostData$Year == years[hostIndex]),"GGF"]))
 
@@ -179,4 +179,5 @@ hostLM <- function(host) {
   plot(hostData$MGR, hostData$GGF, xlab = paste(hosts[hostIndex], "GGF"), ylab = paste(hosts[hostIndex], "MGR"))
   return(hostModel)
 }
+
 summary(hostLM("China"))

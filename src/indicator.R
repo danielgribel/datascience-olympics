@@ -1,13 +1,13 @@
 # edit this source to change indicator dataset
 jforny <- "~/rstudio/OlympicsPrediction/"
 dgribel <- "~/PUC-MSc/datascience/olympics/"
-path <- dgribel
+path <- jforny
 source_gdp_growth <- paste(path, "dataset/gdp_growth.csv", sep = "")
 
 ind <- read.csv(source_gdp_growth, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
 
 # removing unnecessary columns
-ind <- subset(ind, select = -Series.Name)
+ind <- subset(ind, select = -X...Series.Name)
 ind <- subset(ind, select = -Series.Code)
 ind <- subset(ind, select = -Time.Code)
 
@@ -19,7 +19,7 @@ ind <- head(ind, -6)
 years <- c()
 
 # filling years with last K games
-last_n_games <- 7
+last_n_games <- 6
 j <- 1
 for(i in (last_n_games-1):0) {
   years[j] <- 2012 - 4*i
