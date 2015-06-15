@@ -7,7 +7,12 @@ source_gdp_growth <- paste(path, "dataset/gdp_growth.csv", sep = "")
 ind <- read.csv(source_gdp_growth, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
 
 # removing unnecessary columns
-ind <- subset(ind, select = -X...Series.Name)
+if("X..Series.Name" %in% colnames(ind)) {
+  ind <- subset(ind, select = -X..Series.Name)
+}
+if("Series.Name" %in% colnames(ind)) {
+  ind <- subset(ind, select = -Series.Name)
+}
 ind <- subset(ind, select = -Series.Code)
 ind <- subset(ind, select = -Time.Code)
 
