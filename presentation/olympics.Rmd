@@ -199,10 +199,17 @@ text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3
 ```
 
 ## GDP
-- Analyze correlation between GDP growth and medal growth.
-    - % of GDP growth should be relative: mean of GDP growth for last 4 years / mean of global GDP growth
-    - % of medal growth: (medal count / medal count 4 years ago) - 1
-- Fit in a regression model if correlation is observed.
+- Analyze correlation between GDP growth and medals growth $\Rightarrow$ fit in a regression model
+
+\begin{center}
+$ggf_{c(y)} = \frac{\bar{G}_{c(y-4,y)}}{\bar{G}_{w(y-4,y)}}$
+\end{center}
+
+\begin{center}
+\center$mgr_{c(y)} = \frac{S_{c(y)}}{S_{c(y-4)}}$
+\end{center}
+
+where $\bar{G}_{c(y,y-4)}$ is the average GDP growth on period $[y-4, y[$ for country $c$, $\bar{G}_{w(y,y-4)}$ is the world average GDP growth on period $[y-4, y[$ and $S_{c(y)}$ is the medal score for country $c$ on year $y$.
 
 ## Correlation: Medals score x GDP
 **Correlation coefficient** of two variables: their covariance divided by the product of their individual standard deviations. It is a normalized measurement of how the two are linearly related.
@@ -222,6 +229,20 @@ cor_gdp_hosts
 ```
 ```{r}
 cor_gdp_bra
+```
+
+## Correlation: Medals score x GDP (2012)
+```{r, echo=FALSE}
+all <- c(hosts, c("Russia", "Germany", "France"))
+ggf <- ind_factor[all, match(2012, years)]
+mgr <- c()
+i <- 1
+for(c in all) {
+  mgr[i] <- country_medals_ratio(c)[match(2012, years)]
+  i <- i+1
+}
+plot(cbind(mgr,ggf), col=ifelse(rownames(cbind(mgr,ggf))%in% c("China","Great.Britain"), "red", "blue"), pch = 19, cex = 1, ylab = "GDP growth factor", xlab = "Medals growth factor")
+text(mgr, ggf, labels=rownames(cbind(mgr,ggf)), cex= 0.7, pos=3)
 ```
 
 ## Projecting GDP: 2016 analysis

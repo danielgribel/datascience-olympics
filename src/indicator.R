@@ -19,7 +19,7 @@ ind <- head(ind, -6)
 years <- c()
 
 # filling years with last K games
-last_n_games <- 7
+last_n_games <- 6
 j <- 1
 for(i in (last_n_games-1):0) {
   years[j] <- 2012 - 4*i
@@ -31,6 +31,8 @@ colnames(ind)[-1] <- gsub("\\.\\.\\.", ".", colnames(ind)[-1])
 colnames(ind)[-1] <- gsub("\\.\\.", ".", colnames(ind)[-1])
 colnames(ind)[-1] <- substr(colnames(ind)[-1], 1, nchar(colnames(ind)[-1])-5)
 colnames(ind)[which(colnames(ind)=="United.Kingdom")] <- "Great.Britain"
+colnames(ind)[which(colnames(ind)=="Korea.Rep")] <- "South.Korea"
+colnames(ind)[which(colnames(ind)=="Russian.Federation")] <- "Russia"
 
 # calculate world mean indicator (except for country in question) considering past 4 years for each year in period
 world_ind_growth <- function(years, country) {

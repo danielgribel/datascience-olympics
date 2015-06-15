@@ -10,11 +10,11 @@ medals <- medals[ -nrow(medals), ]
 # replace NA by 0
 medals[is.na(medals)] <- 0
 
-hosts <- c("South.Korea" , "Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
-# hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
+hosts <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain")
+hosts_acronym <- c("SPA", "USA", "AUS", "GRE", "CHI", "GBR")
 years <- c()
 
-last_n_games <- 7
+last_n_games <- 6
 j <- 1
 for(i in (last_n_games-1):0) {
   years[j] <- 2012 - 4*i
@@ -127,7 +127,8 @@ cor_gdp <- c()
 source(paste(path, "src/indicator.R", sep = ""))
 more_countries <- c("Spain", "United.States", "Australia", "Greece", "China", "Great.Britain",
                     "France", "Canada", "Italy", "Japan", "Sweden", "Brazil", "Norway", "Finland",
-                    "Netherlands", "Switzerland", "Austria", "Romania", "Bulgaria", "Denmark", "Belgium")
+                    "Netherlands", "Switzerland", "Austria", "Romania", "Bulgaria", "Denmark",
+                    "Belgium", "South.Korea")
 
 # Medals x gdp correlation for hosts -- removing year which country was the host (host factor influences)
 groupeddata <- data.frame("Country" = character(), "Year" = character(),  "GGF" = character(), "MGR" = character(), "Gold" = character(), "Silver" = character(), "Bronze" = character(), "Medals Score" = character())
@@ -179,4 +180,53 @@ hostLM <- function(host) {
   plot(hostData$MGR, hostData$GGF, xlab = paste(hosts[hostIndex], "GGF"), ylab = paste(hosts[hostIndex], "MGR"))
   return(hostModel)
 }
-summary(hostLM("China"))
+#summary(hostLM("China"))
+
+# CORRELATION THROUGH YEARS CONSIDERING ONLY 1 COUNTRY
+#country <- "China"
+#ggf <- ind_factor[country,][-match(country, hosts)]
+#mgr <- country_medals_ratio(country)[-match(country, hosts)]
+#plot(cbind(mgr,ggf))
+#country_model <- lm(mgr ~ ggf)
+
+# CORRELATION FOR 2012, CONSIDERING MANY COUNTRIES
+# all <- c("Spain",
+#                      "United.States",
+#                      "Australia",
+#                      "Greece",
+#                      "Great.Britain",
+#                      "China",
+#                      "Russia",
+#                      "Germany",
+#                      "France",
+#                      "Finland",
+#                      "Romania",
+#                      "Canada",
+#                      "Poland",
+#                      "Netherlands",
+#                      "South.Korea",
+#                      "Bulgaria",
+#                      "Cuba",
+#                      "Switzerland",
+#                      "Denmark",
+#                      "Norway",
+#                      "Belgium",
+#                      "Ukraine",
+#                      "Brazil",
+#                      "New.Zealand",
+#                      "Turkey",
+#                      "Austria",
+#                      "Kenya",
+#                      "Belarus",
+#                      "Argentina",
+#                      "Jamaica",
+#                      "Mexico")
+# 
+# ggf <- ind_factor[all, match(2012, years)]
+# mgr <- c()
+# i <- 1
+# for(c in all) {
+#   mgr[i] <- country_medals_ratio(c)[match(2012, years)]
+#   i <- i+1
+# }
+#plot(cbind(mgr,ggf), col="blue", pch = 19, cex = 0.8)
