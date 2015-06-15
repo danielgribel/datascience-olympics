@@ -1,6 +1,6 @@
 jforny <- "~/rstudio/OlympicsPrediction/"
 dgribel <- "~/PUC-MSc/datascience/olympics/"
-path <- dgribel
+path <- jforny
 source_medals <- paste(path, "dataset/medals.tsv", sep = "")
 
 medals <- read.table(source_medals, header = T, sep = "\t", fill = TRUE, stringsAsFactors = FALSE)
@@ -163,7 +163,7 @@ groupeddata <- groupeddata[order(groupeddata$Year),]
 
 #Linear model for previous hosts
 hostLM <- function(host) {
-  hostIndex <- which(hosts=="China")
+  hostIndex <- which(hosts==host)
   hostData <- groupeddata[!(groupeddata$Country != hosts[hostIndex]),]
   hostGGF <- as.numeric(as.character(hostData[(hostData$Country == hosts[hostIndex] & hostData$Year == years[hostIndex]),"GGF"]))
 
