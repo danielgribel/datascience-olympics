@@ -206,7 +206,7 @@ brazil2016LM <- function() {
 brazilLM = brazil2016LM()
 summary(brazilLM)
 layout(matrix(1:4,2,2))
-plot(hostModel)
+plot(brazilLM)
 layout(matrix(1:1))
 
 # CORRELATION THROUGH YEARS CONSIDERING ONLY 1 COUNTRY
