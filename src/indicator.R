@@ -1,14 +1,14 @@
 # edit this source to change indicator dataset
 jforny <- "~/rstudio/OlympicsPrediction/"
 dgribel <- "~/PUC-MSc/datascience/olympics/"
-path <- jforny
+path <- dgribel
 source_gdp_growth <- paste(path, "dataset/gdp_growth.csv", sep = "")
 
 ind <- read.csv(source_gdp_growth, header = T, sep = ",", fill = TRUE, stringsAsFactors = FALSE)
 
 # removing unnecessary columns
-if("X..Series.Name" %in% colnames(ind)) {
-  ind <- subset(ind, select = -X..Series.Name)
+if("X...Series.Name" %in% colnames(ind)) {
+  ind <- subset(ind, select = -X...Series.Name)
 }
 if("Series.Name" %in% colnames(ind)) {
   ind <- subset(ind, select = -Series.Name)
