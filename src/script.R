@@ -183,7 +183,7 @@ hostLM <- function(host) {
 
 brazil2016LM <- function() {
   hostData <- groupeddata[!(groupeddata$Country != "Brazil"),]
-  
+#   hostData <- groupeddata
   hostData$Year <- as.numeric.factor(hostData$Year)
   
   # Converting dependent and independent properties (factor to numeric)
@@ -193,24 +193,20 @@ brazil2016LM <- function() {
   hostModel <- lm(hostData$MGR ~ hostData$GGF)
   
   #plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
-  
   return(hostModel)
 }
 
-# summary(hostLM("Great.Britain"))
-
 brazilLM = brazil2016LM()
 summary(brazilLM)
-layout(matrix(1:4,2,2))
-#plot(brazilLM)
-layout(matrix(1:1))
+# layout(matrix(1:4,2,2))
+# plot(brazilLM)
+# layout(matrix(1:1))
 
 brazilGDPGrowth12to15 = as.numeric(c(tail(ind[,"Brazil"], 2), c("0.14500", "-1.02600")))
-worldGDPGrowth12and13 = as.numeric(c(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),],na.rm=TRUE), c("3.38900", "3.45100")))
-brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12and13)
+worldGDPGrowth12to15 = as.numeric(c(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),][-c(1)],na.rm=TRUE), c("3.38900", "3.45100")))
+brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12to15)
 
 brazil2016MGR = coefficients(brazilLM)[1] + coefficients(brazilLM)[2] * brazil2016GGF
-
 
 # CORRELATION THROUGH YEARS CONSIDERING ONLY 1 COUNTRY
 #country <- "China"

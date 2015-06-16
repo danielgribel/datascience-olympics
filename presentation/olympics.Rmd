@@ -283,3 +283,31 @@ box()
 \tiny{* 2014 and 2015: forecasts}
 
 \tiny{Source: IMF World Economic Outlook (WEO), April 2015}
+
+## Plotting Brazil MGR x GGF
+```{r, echo=FALSE}
+hostData <- groupeddata[!(groupeddata$Country != "Brazil"),]
+hostData$Year <- as.numeric.factor(hostData$Year)
+# Converting dependent and independent properties (factor to numeric)
+hostData$MGR <- as.numeric.factor(hostData$MGR)
+hostData$GGF <- as.numeric.factor(hostData$GGF)
+plot(hostData$GGF, hostData$MGR, xlab = "Brazil GGF", ylab = "Brazil MGR")
+abline(brazil2016LM())
+text(hostData$GGF, hostData$MGR, labels=hostData$Year, cex= 0.6, pos=3)
+```
+
+## Linear Regression Model for Brazil
+```{r, echo=TRUE}
+summary(brazil2016LM())
+```
+
+
+## Using predicted MGR to improve 2016 prediction
+```{r, echo=TRUE}
+intercept = as.numeric(coefficients(brazilLM)[1])
+slope = as.numeric(coefficients(brazilLM)[2])
+
+brazil2016MGR = intercept + slope * brazil2016GGF
+
+pred_bra_score * (1 + brazil2016MGR/100)
+```
