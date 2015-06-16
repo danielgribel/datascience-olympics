@@ -185,7 +185,7 @@ brazil2016LM <- function() {
   hostData <- groupeddata[!(groupeddata$Country != "Brazil"),]
   
   brazilGDPGrowth12to15 = as.numeric(c(tail(ind[,"Brazil"], 2), c("0.14500", "-1.02600")))
-  worldGDPGrowth12and13 = as.numeric(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),],na.rm=TRUE))
+  worldGDPGrowth12and13 = as.numeric(c(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),],na.rm=TRUE), c("3.38900", "3.45100")))
   brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12and13)
                                                    
   hostData$Year <- as.numeric.factor(hostData$Year)
