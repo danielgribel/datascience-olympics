@@ -192,7 +192,7 @@ brazil2016LM <- function() {
   
   hostModel <- lm(hostData$MGR ~ hostData$GGF)
   
-  plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
+  #plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
   
   return(hostModel)
 }
@@ -202,7 +202,7 @@ brazil2016LM <- function() {
 brazilLM = brazil2016LM()
 summary(brazilLM)
 layout(matrix(1:4,2,2))
-plot(brazilLM)
+#plot(brazilLM)
 layout(matrix(1:1))
 
 brazilGDPGrowth12to15 = as.numeric(c(tail(ind[,"Brazil"], 2), c("0.14500", "-1.02600")))
