@@ -180,7 +180,34 @@ hostLM <- function(host) {
   plot(hostData$MGR, hostData$GGF, xlab = paste(hosts[hostIndex], "GGF"), ylab = paste(hosts[hostIndex], "MGR"))
   return(hostModel)
 }
-#summary(hostLM("China"))
+
+brazil2016LM <- function() {
+  hostData <- groupeddata[!(groupeddata$Country != "Brazil"),]
+  
+  brazilGDPGrowth12to15 = as.numeric(c(tail(ind[,"Brazil"], 2), c("0.14500", "-1.02600")))
+  worldGDPGrowth12and13 = as.numeric(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),],na.rm=TRUE))
+  brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12and13)
+                                                   
+  hostData$Year <- as.numeric.factor(hostData$Year)
+  
+  # Converting dependent and independent properties (factor to numeric)
+  hostData$MGR <- as.numeric.factor(hostData$MGR)
+  hostData$GGF <- as.numeric.factor(hostData$GGF)
+  
+  hostModel <- lm(hostData$MGR ~ hostData$GGF)
+  
+  plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
+  
+  return(hostModel)
+}
+
+# summary(hostLM("Great.Britain"))
+
+brazilLM = brazil2016LM()
+summary(brazilLM)
+layout(matrix(1:4,2,2))
+plot(hostModel)
+layout(matrix(1:1))
 
 # CORRELATION THROUGH YEARS CONSIDERING ONLY 1 COUNTRY
 #country <- "China"
