@@ -291,8 +291,9 @@ hostData$Year <- as.numeric.factor(hostData$Year)
 # Converting dependent and independent properties (factor to numeric)
 hostData$MGR <- as.numeric.factor(hostData$MGR)
 hostData$GGF <- as.numeric.factor(hostData$GGF)
-plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
-text(hostData$MGR, hostData$GGF, labels=hostData$Year, cex= 0.6, pos=3)
+plot(hostData$GGF, hostData$MGR, xlab = "Brazil GGF", ylab = "Brazil MGR")
+abline(brazil2016LM())
+text(hostData$GGF, hostData$MGR, labels=hostData$Year, cex= 0.6, pos=3)
 ```
 
 ## Linear Regression Model for Brazil
