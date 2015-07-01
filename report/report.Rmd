@@ -1,0 +1,11 @@
+---
+title: "Olympic games medals prediction"
+output: html_document
+---
+
+Nesse relatório, será apresentada a metodologia e os principais resultados para um modelo preditivo aplicado ao contexto dos jogos olímpicos de 2016. Nesse trabalho, o foco será dado especialmente para o quadro de medalhas a ser alcançado pelo Brasil, país sede da competição.
+
+## Modelo
+O modelo de dados foi criado a partir de séries históricas que compreendem: resultados de competições recentes, histórico de medalhas em olimpíadas passadas, desenvolvimento econômico (taxa de crescimento do PIB) e investimento em esportes. Além da coleta dessas séries, investigamos o fator sede (hosting factor), que mede o quanto um país melhora a sua performance pelo fato de sediar uma competição olímpica.
+
+O projeto desenvolvido fornece um *framework* genérico que possibilita apresentar possíveis co-relações entre variáveis do modelo (como taxa de crescimento do PIB) e o ganho de medalhas.
