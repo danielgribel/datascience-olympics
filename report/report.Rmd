@@ -1,11 +1,18 @@
 ---
-title: "Olympic games medals prediction"
-output: html_document
+title: 'Olympic games medals prediction: Predicting host country performance'
+author: "Daniel Gribel and João Paulo Forny"
+output: pdf_document
 ---
 
-Nesse relatório, será apresentada a metodologia e os principais resultados para um modelo preditivo aplicado ao contexto dos jogos olímpicos de 2016. Nesse trabalho, o foco será dado especialmente para o quadro de medalhas a ser alcançado pelo Brasil, país sede da competição.
+## Introdução
+
+Nesse relatório, serão apresentados a metodologia e os principais resultados para um modelo preditivo aplicado ao contexto dos jogos olímpicos de 2016. Nesse trabalho, o foco será dado especialmente para o quadro de medalhas a ser alcançado pelo Brasil, país sede da competição.
+
+Os principais objetivos do trabalho são: prever o quadro de medalhas para o Brasil (quantidade de medalhas e distribuição destas em ouro, prata e bronze) e investigar o fator sede, determinando o quanto esse fator efetivamente contribui para a melhoria de performance de um país.
+
+Para atingir esses objetivos, adotamos uma estratégia que consiste em coletar algumas séries históricas que permitam evidenciar possíveis variáveis que interferem no desempenho de um país nos jogos olímpicos (dados econômicos, dados de competições recentes, e dados sobre investimento em esportes). Além disso, a proposta apresentada faz uso de mecanismos de visualização que trazem *insights* ao problema analisado.
 
 ## Modelo
-O modelo de dados foi criado a partir de séries históricas que compreendem: resultados de competições recentes, histórico de medalhas em olimpíadas passadas, desenvolvimento econômico (taxa de crescimento do PIB) e investimento em esportes. Além da coleta dessas séries, investigamos o fator sede (hosting factor), que mede o quanto um país melhora a sua performance pelo fato de sediar uma competição olímpica.
+O modelo de dados foi criado a partir de séries históricas que compreendem: resultados de competições recentes, histórico de medalhas em olimpíadas passadas, desenvolvimento econômico (taxa de crescimento do PIB) e investimento em esportes. Além da coleta dessas séries, investigamos o fator sede (*hosting factor*), que mede o quanto um país melhora a sua performance pelo fato de sediar uma competição olímpica.
 
 O projeto desenvolvido fornece um *framework* genérico que possibilita apresentar possíveis co-relações entre variáveis do modelo (como taxa de crescimento do PIB) e o ganho de medalhas.
