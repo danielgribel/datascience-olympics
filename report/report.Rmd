@@ -12,7 +12,37 @@ Os principais objetivos do trabalho são: prever o quadro de medalhas para o Bra
 
 Para atingir esses objetivos, adotamos uma estratégia que consiste em coletar algumas séries históricas que permitam evidenciar possíveis variáveis que interferem no desempenho de um país nos jogos olímpicos (dados econômicos, dados de competições recentes, e dados sobre investimento em esportes). Além disso, a proposta apresentada faz uso de mecanismos de visualização que trazem *insights* ao problema analisado.
 
-## Modelo
+## Modelo de dados
 O modelo de dados foi criado a partir de séries históricas que compreendem: resultados de competições recentes, histórico de medalhas em olimpíadas passadas, desenvolvimento econômico (taxa de crescimento do PIB) e investimento em esportes. Além da coleta dessas séries, investigamos o fator sede (*hosting factor*), que mede o quanto um país melhora a sua performance pelo fato de sediar uma competição olímpica.
 
 O projeto desenvolvido fornece um *framework* genérico que possibilita apresentar possíveis co-relações entre variáveis do modelo (como taxa de crescimento do PIB) e o ganho de medalhas.
+
+## Datasets
+No projeto foram usados basicamente 2 datasets. O primeiro, obtido pelo website do Data Market (https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games), disponibiliza o total de medalhas (discrimininando por ouro, prata e bronze) conquistado por cada país no período compreendido entre 1896 e 2012. O segundo dataset, obtido pelo portal do Banco Mundial (http://data.worldbank.org), traz dados referentes aos indicadores dos países, como a taxa de crescimento (PIB) ao longo do tempo.
+
+## Modelo preditivo
+
+### Fator sede (*hosting factor*)
+
+### Crescimento econômico
+Para analisar a co-relação entre o crescimento do PIB e o crescimento de medalhas, usamos as seguintes métricas:
+
+\begin{center}
+$ggf_{c(y)} = \frac{\bar{G}_{c(y-4,y)}}{\bar{G}_{w(y-4,y)}}$
+\end{center}
+
+\begin{center}
+\center$mgr_{c(y)} = \frac{S_{c(y)}}{S_{c(y-4)}}$
+\end{center}
+
+onde $\bar{G}_{c(y,y-4)}$ é o crescimento médio do PIB do país $c$ no período $[y-4, y[$, $\bar{G}_{w(y,y-4)}$ é o crescimento médio do PIB mundial no período $[y-4, y[$ e $S_{c(y)}$ é o *score* de medalhas para o país $c$ no ano $y$.
+
+### Co-relação: *Score* de medalhas x PIB
+O coeficiente de co-relação entre duas variáveis corresponde às suas covariâncias dividido
+pelo produto de seus desvios padrões individuais. É uma medida normalizada que captura o quanto duas variáveis estão linearmente relacionadas. O valor de um coeficiente de co-relação varia entre -1 (variáveis negativamente relacionadas linearmente) e 1 (variáveis positivamente relacionadas linearmente).
+
+### Competições recentes
+
+### Investimentos em esporte
+
+## Conclusões
