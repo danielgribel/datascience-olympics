@@ -42,7 +42,51 @@ O coeficiente de co-relação entre duas variáveis corresponde às suas covari�
 pelo produto de seus desvios padrões individuais. É uma medida normalizada que captura o quanto duas variáveis estão linearmente relacionadas. O valor de um coeficiente de co-relação varia entre -1 (variáveis negativamente relacionadas linearmente) e 1 (variáveis positivamente relacionadas linearmente).
 
 ### Competições recentes
+Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas.  
 
 ### Investimentos em esporte
+Para analisar o impacto do investimento em esportes no número de medalhas, consideramos o orçamento do Ministério dos Esportes, disponibilizado através da Lei Orçamentária Anual (LOA), elaborada ano a ano pelo poder executivo federal. A LOA é uma lei que estabelece despesas e receitas que serão realizadas no próximo ano. Desta maneira, foram coletados os orçamentos dos últimos 6 anos (2010 -- 2015), a fim de se comparar o ganho de medalhas em 2012 com o possível a ser obtido em 2016. A tabela a seguir mostra os dados de investimento:
+
+```{r wrapper=TRUE, eval=FALSE}
+Investimento em esporte: Brasil
+ano orçamento (B de reais) população (M) orçamento/pp score de medalhas
+2015 3.01 204.4 14.72 -
+2014 3.39 202.7 16.72 -
+2013 3.38 200.3 16.87 -
+2012 3.44 198.6 17.32 28
+2011 2.50 196.9 12.69 -
+2010 1.50 195.2 7.68 -
+```
+
+Os dados nos mostram que a média anual de investimento nos anos anteriores à olimpíada de 2012 foi de 10.18 milhões de reais per capita. Nos anos anteriores à 2016 (2012 -- 2015), a média anual de investimento foi de 16.40 milhões de reais per capita. Se considerarmos uma relação direta, chegaríamos à um score de medalhas de 45.11, como mostra a regra de três abaixo:
+
+```{r wrapper=TRUE, eval=FALSE}
+avg(2012, 2015) = 16.40 -> x
+avg(2010, 2011) = 10.18 -> 28
+
+x = 45.11
+```
+
+Com este valor, se fizermos a diferença do novo score pelo score do hosting factor ja calculado, temos: 45.11 - 39.2 = 5.91. No entanto, vamos considerar também os dados de investimento feito pelo Reino Unido (sede das Olimpíadas de 2012), a fim de se realizar uma comparação mais assertiva. Nos anos anteriores à Olimpíada de 2000, o Reino Unido investiu em média cerca de 3.22 milhões de reais per capita em esportes. Para 2012, foi investido cerca de 13.18 milhões de reais nos anos anteriores. Isso corresponde a um aumento de cerca de 4.09x. Se analisarmos o mesmo período, em 2000 o score de medalhas para o Reino Unido foi de 60. Em 2012 foi de 140. Isso corresponde a um aumento de cerca de 2.33x. Portanto, conseguimos observar que a relação investimento em esportes x ganho de medalhas não é direta (1 para 1). A razão que encontramos para o caso do Reino Unido é 4.09/2.33 ~ 1.75. Portanto, devemos atualizar nossa previsão para o Brasil, considerando o ganho no score como 5.91/1.75 ~ 3.37.
+
+```{r wrapper=TRUE, eval=FALSE}
+Investimento em esporte: Reino Unido
+ano orçamento (M de reais) população (M) orçamento/pp score de medalhas
+2012 840 63.7 13.18 140
+2000 190 58.9 3.22 60
+```
+
+Portanto, ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de 3.37. Convertendo para medalhas temos:
+
+```{r eval=FALSE}
+> bra_gold_perc*3.37
+[1] 0.7488889
+> bra_silver_perc*3.37
+[1] 0.9829167
+> bra_bronze_perc*3.37
+[1] 1.638194
+```
+
+Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +2 medalhas de bronze.
 
 ## Conclusões
