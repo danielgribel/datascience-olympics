@@ -4,6 +4,10 @@ author: "Daniel Gribel and João Paulo Forny"
 output: pdf_document
 ---
 
+```{r echo=FALSE}
+#source("~/PUC-MSc/datascience/olympics/src/script.R")
+```
+
 ## Introdução
 
 Nesse relatório, serão apresentados a metodologia e os principais resultados para um modelo preditivo aplicado ao contexto dos jogos olímpicos de 2016. Nesse trabalho, o foco será dado especialmente para o quadro de medalhas a ser alcançado pelo Brasil, país sede da competição.
@@ -23,7 +27,62 @@ No projeto foram usados basicamente 2 datasets. O primeiro, obtido pelo website 
 ## Modelo preditivo
 
 ### Fator sede (*hosting factor*)
+O principal objetivo deste trabalho é prever o número de medalhas que o Brasil ganhará em 2016. Para esta finalidade, analisaremos a performance de outros países que já sediaram alguma olimpíada, em especial as mais recentes. Nesta etapa, faremos um filtro dos países que sediaram os jogos desde 1992. A figura abaixo mostra o total de medalhas obtidos quando cada país foi sede dos jogos, nos anos de 1992, 1996, 2000, 2004, 2008 e 2012. Como podemos observar, o número de medalhas obtidas por um país sede é, de modo geral, maior que o número de medalhas obtidos quando o país é um visitante (no caso dos EUA, isso não acontece, mas veremos mais adiante o que isso significa).
 
+Porém, não estamos interessados no total de medalhas exatamente. Esse é um indicador importante, mas devemos considerar que medalhas de ouro valem mais que medalhas de prata e medalhas de prata valem mais que as de bronze. Portanto, definimos o *score* de medalhas como sendo uma ponderação, que deve nos dar uma previsão melhor. Para nossa análise, vamos considerar
+
+\begin{center}
+1 medalha de ouro = 3 medalhas de bronze
+
+1 medalha de prata = 2 medalhas de bronze
+\end{center}
+
+Assim, o *score* de medalhas para um país $c$ em um ano $y$ é definido como:
+\begin{center}
+$S_{c(y)} = 3g_{c(y)} + 2s_{c(y)} + b_{c(y)}$
+\end{center}
+
+onde $g_{c(y)}$ corresponde ao total de medalhas de ouro ganho pelo país $c$ no ano $y$, $s_{c(y)}$ ao total de medalhas de prata e $b_{c(y)}$ ao total de medalhas de bronze. Agora, podemos fazer um levantamento sobre o fator sede considerando o *score* de medalhas ao invés do total de medalhas. Nesse novo resultado, podemos observar que o EUA teve um desempenho melhor sendo sede do que sendo visitante (pois aumentou sua proporção de ouro quando foi sede), nos trazendo evidências mais compatíveis com a realidade do que o gráfico mostrando o total de medalhas. A figura abaixo compara o *score* de medalhas do páis sendo sede, com a média dos *scores* de medalhas quando o país foi visitante:
+
+A partir desses dados, conseguimos obter a média para o fator sede (*hosting factor*):
+```{r eval=FALSE, echo=FALSE}
+home_factor/mean_away_factor
+```
+```{r eval=FALSE, echo=FALSE}
+round(home_factor/mean_away_factor, 4)
+```
+```{r eval=FALSE, echo=FALSE}
+mean(home_factor/mean_away_factor)
+```
+
+o que significa que em média um país sede aumenta em 1.88x o seu *score*. Portanto, nesse ponto já temos condições de fazer uma primeira previsão (ainda grosseira) para o Brasil. 
+
+Pegamos o desempenho do país nas últimas 6 olímpiadas:
+```{r eval=FALSE}
+bra_score <-  3*tail(medals$Brazil..Gold, 6) +
+              2*tail(medals$Brazil..Silver, 6) +
+              tail(medals$Brazil..Bronze, 6)
+```
+
+Obtemos $r$, como sendo a proporção calculada acima:
+```{r eval=FALSE}
+# ratio: mean between home factor and mean away factor
+r <- mean(home_factor/mean_away_factor)
+```
+
+E fazemos a predição do score para o Brasil em 2016:
+```{r eval=FALSE}
+# predicting BRA score
+pred_bra_score <- mean(bra_score) * r
+```
+Como estamos interessados na quantidade de medalhas de ouro, prata e bronze, devemos agora fazer o movimento reverso, convertendo o *score* para o número de medalhas. Para isso, tomamos a média da proporção de ouro, prata e bronze para o Brasil na série história:
+```{r eval=FALSE}
+# predicting BRA medals distribution
+p <- pred_bra_score/3 + pred_bra_score/6 + pred_bra_score/9
+pred_bra_gold <- round(bra_gold_perc*p)
+pred_bra_silver <- round(bra_silver_perc*p)
+pred_bra_bronze <- round(bra_bronze_perc*p)
+```
 ### Crescimento econômico
 Para analisar a co-relação entre o crescimento do PIB e o crescimento de medalhas, usamos as seguintes métricas:
 
@@ -45,7 +104,7 @@ pelo produto de seus desvios padrões individuais. É uma medida normalizada que
 Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas.  
 
 ### Investimentos em esporte
-Para analisar o impacto do investimento em esportes no número de medalhas, consideramos o orçamento do Ministério dos Esportes, disponibilizado através da Lei Orçamentária Anual (LOA), elaborada ano a ano pelo poder executivo federal. A LOA é uma lei que estabelece despesas e receitas que serão realizadas no próximo ano. Desta maneira, foram coletados os orçamentos dos últimos 6 anos (2010 -- 2015), a fim de se comparar o ganho de medalhas em 2012 com o possível a ser obtido em 2016. A tabela a seguir mostra os dados de investimento:
+Para analisar o impacto do investimento em esportes no número de medalhas, consideramos o orçamento do Ministério dos Esportes, disponibilizado através da Lei Orçamentária Anual (LOA), elaborada ano a ano pelo poder executivo federal. A LOA é uma lei que estabelece despesas e receitas que serão realizadas no próximo ano. Desta maneira, foram coletados os orçamentos dos últimos 6 anos (2010 -- 2015), a fim de se comparar o ganho de medalhas em 2012 com o possível ganho a ser obtido em 2016. A tabela a seguir mostra os dados de investimento:
 
 ```{r wrapper=TRUE, eval=FALSE}
 Investimento em esporte: Brasil
