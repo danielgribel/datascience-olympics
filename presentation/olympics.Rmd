@@ -291,9 +291,11 @@ hostData$Year <- as.numeric.factor(hostData$Year)
 # Converting dependent and independent properties (factor to numeric)
 hostData$MGR <- as.numeric.factor(hostData$MGR)
 hostData$GGF <- as.numeric.factor(hostData$GGF)
-plot(hostData$GGF, hostData$MGR, xlab = "Brazil GGF", ylab = "Brazil MGR")
-abline(brazil2016LM())
+plot(hostData$GGF, hostData$MGR, xlab = "Brazil GGF", ylab = "Brazil MGR", xlim=c(0, 2), ylim=c(0,3.5))
+abline(brazilLM)
 text(hostData$GGF, hostData$MGR, labels=hostData$Year, cex= 0.6, pos=3)
+points(hostData$GGF, fitted.values(brazilLM), col = "red")
+points(brazil2016GGF, brazil2016MGR, col = "blue")
 ```
 
 ## Linear Regression Model for Brazil
@@ -308,7 +310,16 @@ slope = as.numeric(coefficients(brazilLM)[2])
 
 brazil2016MGR = intercept + slope * brazil2016GGF
 
-pred_bra_score * (1 + brazil2016MGR/100)
+gdp_pred_bra_score <- pred_bra_score * brazil2016MGR
+
+```
+
+## Our second prediction for Brazil medals distribution...
+```{r, echo=FALSE}
+ylim_pred <- c(0, 1.2*max(gdp_pred_bra))
+bp_pred <- barplot(array(gdp_pred_bra), col = color_medals, border = NA, ylim = ylim_pred, axes=FALSE)
+legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset = 0.03)
+text(x = bp_pred, y = array(gdp_pred_bra), label = array(gdp_pred_bra), pos = 3, cex = 3.5, col = "#999999")
 ```
 
 ## Sports investment
