@@ -22,12 +22,12 @@ O modelo de dados foi criado a partir de séries históricas que compreendem: re
 O projeto desenvolvido fornece um *framework* genérico que possibilita apresentar possíveis co-relações entre variáveis do modelo (como taxa de crescimento do PIB) e o ganho de medalhas.
 
 ## Datasets
-No projeto foram usados basicamente 2 datasets. O primeiro, obtido pelo website do Data Market (https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games), disponibiliza o total de medalhas (discrimininando por ouro, prata e bronze) conquistado por cada país no período compreendido entre 1896 e 2012. O segundo dataset, obtido pelo portal do Banco Mundial (http://data.worldbank.org), traz dados referentes aos indicadores dos países, como a taxa de crescimento (PIB) ao longo do tempo.
+No projeto foram usados basicamente 2 datasets. O primeiro, obtido pelo website do [Data Market](https://datamarket.com/data/set/24b1/medals-won-at-the-summer-olympic-games), disponibiliza o total de medalhas (discrimininando por ouro, prata e bronze) conquistado por cada país no período compreendido entre 1896 e 2012. O segundo dataset, obtido pelo portal do [Banco Mundial](http://data.worldbank.org), traz dados referentes aos indicadores dos países, como a taxa de crescimento (PIB) ao longo do tempo.
 
 ## Modelo preditivo
 
 ### Fator sede (*hosting factor*)
-O principal objetivo deste trabalho é prever o número de medalhas que o Brasil ganhará em 2016. Para esta finalidade, analisaremos a performance de outros países que já sediaram alguma olimpíada, em especial as mais recentes. Nesta etapa, faremos um filtro dos países que sediaram os jogos desde 1992. A figura abaixo mostra o total de medalhas obtidos quando cada país foi sede dos jogos, nos anos de 1992, 1996, 2000, 2004, 2008 e 2012. Como podemos observar, o número de medalhas obtidas por um país sede é, de modo geral, maior que o número de medalhas obtidos quando o país é visitante (no caso dos EUA, isso não acontece, mas veremos mais adiante o que isso significa).
+O principal objetivo deste trabalho é prever o número de medalhas que o Brasil ganhará em 2016. Para esta finalidade, analisaremos a performance de outros países que já sediaram alguma olimpíada, em especial as mais recentes. Nesta etapa, concentraremos nossa análise no período entre 1992 e 2012. A figura abaixo mostra o total de medalhas obtido quando cada país foi sede dos jogos, nos anos de 1992, 1996, 2000, 2004, 2008 e 2012. Como podemos observar, o número de medalhas obtidas por um país sede é, de modo geral, maior que o número de medalhas obtidos quando o país é visitante (no caso dos EUA, isso não acontece, mas veremos mais adiante o que isso significa).
 
 Porém, não estamos interessados no total de medalhas exatamente. Esse é um indicador importante, mas devemos considerar que medalhas de ouro valem mais que medalhas de prata e medalhas de prata valem mais que as de bronze. Portanto, definimos o *score* de medalhas como sendo uma ponderação, que deve nos dar uma previsão melhor. Para nossa análise, iremos considerar:
 
@@ -73,10 +73,21 @@ E então fazemos a predição do *score* para o Brasil em 2016:
 # predicting BRA score
 pred_bra_score <- mean(bra_score) * r
 ```
-Como estamos interessados na quantidade de medalhas de ouro, prata e bronze, devemos agora fazer o movimento reverso, convertendo o *score* para o número de medalhas. Para isso, tomamos a média da proporção de ouro, prata e bronze para o Brasil na série história:
+Como estamos interessados na quantidade de medalhas de ouro, prata e bronze, devemos agora fazer o movimento reverso, convertendo o *score* para o número de medalhas. Para isso, tomamos a proporção de ouro, prata e bronze para o Brasil na série história:
 ```{r eval=FALSE}
 # predicting BRA medals distribution
 p <- pred_bra_score/3 + pred_bra_score/6 + pred_bra_score/9
+
+bra_gold_totals <- sum(tail(medals$Brazil..Gold, 6))
+bra_silver_totals <- sum(tail(medals$Brazil..Silver, 6))
+bra_bronze_totals <- sum(tail(medals$Brazil..Bronze, 6))
+
+sum_bra_medals <- bra_gold_totals + bra_silver_totals + bra_bronze_totals
+
+bra_gold_perc <- bra_gold_totals/sum_bra_medals
+bra_silver_perc <- bra_silver_totals/sum_bra_medals
+bra_bronze_perc <- bra_bronze_totals/sum_bra_medals
+
 pred_bra_gold <- round(bra_gold_perc*p)
 pred_bra_silver <- round(bra_silver_perc*p)
 pred_bra_bronze <- round(bra_bronze_perc*p)
@@ -90,7 +101,7 @@ E o resultado final dessa primeira previsão é o seguinte:
 > pred_bra_bronze
 [1] 12
 ```
-5 medalhas de ouro, 7 de prata e 12 de bronze.
+5 medalhas de ouro, 7 de prata e 12 de bronze. Chamaremos essa primeira previsão de **Hosting factor prediction (HFP)**, que será uma base para as análises seguintes.
 
 ### Crescimento econômico
 Para analisar a co-relação entre o crescimento do PIB e o crescimento de medalhas, usamos as seguintes métricas:
@@ -110,41 +121,66 @@ O coeficiente de co-relação entre duas variáveis corresponde às suas covari�
 pelo produto de seus desvios padrões individuais. É uma medida normalizada que captura o quanto duas variáveis estão linearmente relacionadas. O valor de um coeficiente de co-relação varia entre -1 (variáveis negativamente relacionadas linearmente) e 1 (variáveis positivamente relacionadas linearmente).
 
 ### Competições recentes
-Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas.  
+Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas. Para esta finalidade, analisaremos especialmente as modalidades em que o Brasil tradicionalmente tem melhor desempenho nas olimpíadas, como vôlei, vôlei de praia, judô e futebol.
+
+A metodologia para essa parte é simples: para cada uma dessas modalidades, coletamos a posição do Brasil na respectiva competição mundial anterior a 2012 e comparamos com a posição do país (nessa mesma modalidade) na olimpíada de 2012. Em seguida, coletamos a posição do Brasil na respectiva competição mundial anterior a 2016 (e posterior a 2012) e fazemos uma projeção para 2016. Por exemplo, para o vôlei masculino temos o seguinte cenário:
+
+Posição na última competição mundial antes de 2012: 1º
+
+Posição na olimpíada de 2012: 2º
+
+Posição na última competição mundial antes de 2016: 2º
+
+Previsão para a olimpíada de 2016: ?
+
+Neste caso, consideramos a projeção como sendo uma relação direta, e estimamos que o Brasil ganhará uma medalha de bronze (3ª posição) em 2016 no vôlei masculino. Por fim, aplicamos essa metodologia para cada uma das modalidades coletadas: vôlei masculino, vôlei feminino, vôlei de praia masculino, vôlei de praia feminino e futebol masculino. E também introduzimos uma projeção para o polo-aquático masculino e o handball feminino, que tiveram desempenho baixo ao longo das séries históricas, mas que em 2015 ganharam medalha de bronze e ouro (respectivamente) na última competição mundial, sendo portanto, modalidades promissoras para 2016.
+
+Computando o somatório total da projeção de cada modalidade, obtemos um resultado final de +0 medalha de ouro, -1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
 
 ### Investimentos em esporte
 Para analisar o impacto do investimento em esportes no número de medalhas, consideramos o orçamento do Ministério dos Esportes, disponibilizado através da Lei Orçamentária Anual (LOA), elaborada ano a ano pelo poder executivo federal. A LOA é uma lei que estabelece despesas e receitas que serão realizadas no próximo ano. Desta maneira, foram coletados os orçamentos dos últimos 6 anos (2010 -- 2015), a fim de se comparar o ganho de medalhas em 2012 com o possível ganho a ser obtido em 2016. A tabela a seguir mostra os dados de investimento:
 
-```{r wrapper=TRUE, eval=FALSE}
-Investimento em esporte: Brasil
-ano orçamento (B de reais) população (M) orçamento/pp score de medalhas
-2015 3.01 204.4 14.72 -
-2014 3.39 202.7 16.72 -
-2013 3.38 200.3 16.87 -
-2012 3.44 198.6 17.32 28
-2011 2.50 196.9 12.69 -
-2010 1.50 195.2 7.68 -
+```{r eval=FALSE}
+> sports_investment_bra
+  year budget population budget_pp
+1 2010   1.50      195.2      7.68
+2 2011   2.50      196.9     12.69
+3 2012   3.44      198.6     17.32
+4 2013   3.38      200.3     16.87
+5 2014   3.39      202.7     16.72
+6 2015   3.01      204.4     14.72
 ```
 
-Os dados nos mostram que a média anual de investimento nos anos anteriores à olimpíada de 2012 foi de 10.18 milhões de reais per capita. Nos anos anteriores à 2016 (2012 -- 2015), a média anual de investimento foi de 16.40 milhões de reais per capita. Se considerarmos uma relação direta, chegaríamos à um score de medalhas de 45.11, como mostra a regra de três abaixo:
+Os dados nos mostram que a média anual de investimento nos anos anteriores à olimpíada de 2012 foi de 10.18 milhões de reais per capita. Nos anos anteriores à 2016 (2012 -- 2015), a média anual de investimento foi de 16.40 milhões de reais per capita. Se considerarmos uma relação direta, chegaríamos à um score de medalhas de 45.10, como mostra a regra de três abaixo:
 
 ```{r wrapper=TRUE, eval=FALSE}
-avg(2012, 2015) = 16.40 -> x
-avg(2010, 2011) = 10.18 -> 28
+budget_pp_2016 <- mean(budget_pp[which(year >= 2012)])
+> budget_pp_2016
+[1] 16.4075
+budget_pp_2012 <- mean(budget_pp[which(year < 2012)])
+> budget_pp_2012
+[1] 10.185
+bra_score_2012 <- 28
+x <- (bra_score_2016*bra_score_2012)/bra_score_2012
 
-x = 45.11
+> x
+[1] 45.10653
 ```
 
-Com este valor, se fizermos a diferença do novo score pelo score do hosting factor ja calculado, temos: 45.11 - 39.2 = 5.91. No entanto, vamos considerar também os dados de investimento feito pelo Reino Unido (sede das Olimpíadas de 2012), a fim de se realizar uma comparação mais assertiva. Nos anos anteriores à Olimpíada de 2000, o Reino Unido investiu em média cerca de 3.22 milhões de reais per capita em esportes. Para 2012, foi investido cerca de 13.18 milhões de reais nos anos anteriores. Isso corresponde a um aumento de cerca de 4.09x. Se analisarmos o mesmo período, em 2000 o score de medalhas para o Reino Unido foi de 60. Em 2012 foi de 140. Isso corresponde a um aumento de cerca de 2.33x. Portanto, conseguimos observar que a relação investimento em esportes x ganho de medalhas não é direta (1 para 1). A razão que encontramos para o caso do Reino Unido é 4.09/2.33 ~ 1.75. Portanto, devemos atualizar nossa previsão para o Brasil, considerando o ganho no score como 5.91/1.75 ~ 3.37.
-
-```{r wrapper=TRUE, eval=FALSE}
-Investimento em esporte: Reino Unido
-ano orçamento (M de reais) população (M) orçamento/pp score de medalhas
-2012 840 63.7 13.18 140
-2000 190 58.9 3.22 60
+Com este valor, se fizermos a diferença do novo score pelo HFP ja calculado, temos: 45.10 - 39.2 = 5.91. No entanto, vamos considerar também os dados de investimento feito pelo Reino Unido (sede das Olimpíadas de 2012), a fim de se realizar uma comparação mais assertiva. Nos anos anteriores à Olimpíada de 2000, o Reino Unido investiu em média cerca de 3.22 milhões de reais per capita em esportes. Para 2012, foi investido cerca de 13.18 milhões de reais nos anos anteriores. Isso corresponde a um aumento de cerca de 4.09x. Se analisarmos o mesmo período, em 2000 o score de medalhas para o Reino Unido foi de 60. Em 2012 foi de 140. Isso corresponde a um aumento de cerca de 2.33x.
+```{r eval=FALSE}
+> sports_investment_gbr
+  year budget population budget_pp medals_score
+1 2000   0.19       58.9      3.22           60
+2 2012   0.84       63.7     13.18          140
 ```
-
-Portanto, ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de 3.37. Convertendo para medalhas temos:
+Portanto, conseguimos observar que a relação investimento em esportes x ganho de medalhas não é direta (1 para 1). A razão que encontramos para o caso do Reino Unido é 4.09/2.33 ~ 1.75.
+```{r eval=FALSE}
+ratio_budget_medals <- sports_investment_gbr$budget_pp/sports_investment_gbr$medals_score
+> ratio_budget_medals[2]/ratio_budget_medals[1]
+[1] 1.754215
+```
+Portanto, devemos atualizar nossa previsão para o Brasil, considerando o ganho no score como 5.91/1.75 ~ 3.37. Ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de 3.37. Convertendo para medalhas temos:
 
 ```{r eval=FALSE}
 > bra_gold_perc*3.37
@@ -154,7 +190,6 @@ Portanto, ao considerar o aumento de investimentos em esporte, o acréscimo no s
 > bra_bronze_perc*3.37
 [1] 1.638194
 ```
-
-Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +2 medalhas de bronze.
+Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
 
 ## Conclusões
