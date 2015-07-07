@@ -133,8 +133,7 @@ bp_scores <- barplot(rbind(home_factor, mean_away_factor),
               ylim = y_lim_score,
               las = 1)
 
-legend("topleft", legend = c("Home score", "Away score (mean)"), fill = colors, bty = "n",
-       inset = 0.03)
+legend("topleft", legend = c("Home score", "Away score (mean)"), fill = colors, bty = "n",inset = 0.03)
 
 text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = array(rbind(home_factor, mean_away_factor)), pos = 3, cex = 0.8, col = "#444444")
 ```
