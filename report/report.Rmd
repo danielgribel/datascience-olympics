@@ -120,23 +120,6 @@ onde $\bar{G}_{c(y,y-4)}$ é o crescimento médio do PIB do país $c$ no períod
 O coeficiente de co-relação entre duas variáveis corresponde às suas covariâncias dividido
 pelo produto de seus desvios padrões individuais. É uma medida normalizada que captura o quanto duas variáveis estão linearmente relacionadas. O valor de um coeficiente de co-relação varia entre -1 (variáveis negativamente relacionadas linearmente) e 1 (variáveis positivamente relacionadas linearmente).
 
-### Competições recentes
-Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas. Para esta finalidade, analisaremos especialmente as modalidades em que o Brasil tradicionalmente tem melhor desempenho nas olimpíadas, como vôlei, vôlei de praia, judô e futebol.
-
-A metodologia para essa parte é simples: para cada uma dessas modalidades, coletamos a posição do Brasil na respectiva competição mundial anterior a 2012 e comparamos com a posição do país (nessa mesma modalidade) na olimpíada de 2012. Em seguida, coletamos a posição do Brasil na respectiva competição mundial anterior a 2016 (e posterior a 2012) e fazemos uma projeção para 2016. Por exemplo, para o vôlei masculino temos o seguinte cenário:
-
-Posição na última competição mundial antes de 2012: 1º
-
-Posição na olimpíada de 2012: 2º
-
-Posição na última competição mundial antes de 2016: 2º
-
-Previsão para a olimpíada de 2016: ?
-
-Neste caso, consideramos a projeção como sendo uma relação direta, e estimamos que o Brasil ganhará uma medalha de bronze (3ª posição) em 2016 no vôlei masculino. Por fim, aplicamos essa metodologia para cada uma das modalidades coletadas: vôlei masculino, vôlei feminino, vôlei de praia masculino, vôlei de praia feminino e futebol masculino. E também introduzimos uma projeção para o polo-aquático masculino e o handball feminino, que tiveram desempenho baixo ao longo das séries históricas, mas que em 2015 ganharam medalha de bronze e ouro (respectivamente) na última competição mundial, sendo portanto, modalidades promissoras para 2016.
-
-Computando o somatório total da projeção de cada modalidade, obtemos um resultado final de +0 medalha de ouro, -1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
-
 ### Investimentos em esporte
 Para analisar o impacto do investimento em esportes no número de medalhas, consideramos o orçamento do Ministério dos Esportes, disponibilizado através da Lei Orçamentária Anual (LOA), elaborada ano a ano pelo poder executivo federal. A LOA é uma lei que estabelece despesas e receitas que serão realizadas no próximo ano. Desta maneira, foram coletados os orçamentos dos últimos 6 anos (2010 -- 2015), a fim de se comparar o ganho de medalhas em 2012 com o possível ganho a ser obtido em 2016. A tabela a seguir mostra os dados de investimento:
 
@@ -153,14 +136,15 @@ Para analisar o impacto do investimento em esportes no número de medalhas, cons
 
 Os dados nos mostram que a média anual de investimento nos anos anteriores à olimpíada de 2012 foi de 10.18 milhões de reais per capita. Nos anos anteriores à 2016 (2012 -- 2015), a média anual de investimento foi de 16.40 milhões de reais per capita. Se considerarmos uma relação direta, chegaríamos à um score de medalhas de 45.10, como mostra a regra de três abaixo:
 
-```{r wrapper=TRUE, eval=FALSE}
+```{r eval=FALSE}
 budget_pp_2016 <- mean(budget_pp[which(year >= 2012)])
 > budget_pp_2016
 [1] 16.4075
 budget_pp_2012 <- mean(budget_pp[which(year < 2012)])
 > budget_pp_2012
 [1] 10.185
-bra_score_2012 <- 28
+bra_score_2012 <- 3*tail(medals$Brazil..Gold, 1) + 2*tail(medals$Brazil..Silver, 1) + 
+                    tail(medals$Brazil..Bronze, 1)
 x <- (bra_score_2016*bra_score_2012)/bra_score_2012
 
 > x
@@ -180,16 +164,41 @@ ratio_budget_medals <- sports_investment_gbr$budget_pp/sports_investment_gbr$med
 > ratio_budget_medals[2]/ratio_budget_medals[1]
 [1] 1.754215
 ```
-Portanto, devemos atualizar nossa previsão para o Brasil, considerando o ganho no score como 5.91/1.75 ~ 3.37. Ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de 3.37. Convertendo para medalhas temos:
+Portanto, devemos atualizar nossa previsão para o Brasil, considerando o ganho no score como:
 
 ```{r eval=FALSE}
-> bra_gold_perc*3.37
+sports_inv <- (x-pred_bra_score)/1.754215
+> sports_inv
+[1] 3.36705
+```
+
+Ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de aproximadamente 3.37. Convertendo para medalhas temos:
+
+```{r eval=FALSE}
+> bra_gold_perc*sports_inv
 [1] 0.7488889
-> bra_silver_perc*3.37
+> bra_silver_perc*sports_inv
 [1] 0.9829167
-> bra_bronze_perc*3.37
+> bra_bronze_perc*sports_inv
 [1] 1.638194
 ```
 Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
+
+### Competições recentes
+Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas. Para esta finalidade, analisaremos especialmente as modalidades em que o Brasil tradicionalmente tem melhor desempenho nas olimpíadas, como vôlei, vôlei de praia, judô e futebol.
+
+A metodologia para essa parte é simples: para cada uma dessas modalidades, coletamos a posição do Brasil na respectiva competição mundial anterior a 2012 e comparamos com a posição do país (nessa mesma modalidade) na olimpíada de 2012. Em seguida, coletamos a posição do Brasil na respectiva competição mundial anterior a 2016 (e posterior a 2012) e fazemos uma projeção para 2016. Por exemplo, para o vôlei masculino temos o seguinte cenário:
+
+Posição na última competição mundial antes de 2012: 1º
+
+Posição na olimpíada de 2012: 2º
+
+Posição na última competição mundial antes de 2016: 2º
+
+Previsão para a olimpíada de 2016: ?
+
+Neste caso, consideramos a projeção como sendo uma relação direta, e estimamos que o Brasil ganhará uma medalha de bronze (3ª posição) em 2016 no vôlei masculino. Por fim, aplicamos essa metodologia para cada uma das modalidades coletadas: vôlei masculino, vôlei feminino, vôlei de praia masculino, vôlei de praia feminino e futebol masculino. E também introduzimos uma projeção para o polo-aquático masculino e o handball feminino, que tiveram desempenho baixo ao longo das séries históricas, mas que em 2015 ganharam medalha de bronze e ouro (respectivamente) na última competição mundial, sendo portanto, modalidades promissoras para 2016.
+
+Computando o somatório total da projeção de cada modalidade, obtemos um resultado final de +0 medalha de ouro, -1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
 
 ## Conclusões

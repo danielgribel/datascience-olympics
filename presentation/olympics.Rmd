@@ -15,12 +15,10 @@ subtitle: Predicting host country performance
 - Medals history
     - \textcolor{red}{80's problem: USSR, East/West Germany}
 - Hosting factor
-- \textcolor{blue}{Performance analysis on recent competitions}
-- Number of athletes participating
-- Population (total and growth rate)
-    - "Population pyramids" evolution
 - GDP (total, per capita and growth rate) and economic freedom
-- \textcolor{red}{Sports investment}
+- \textcolor{blue}{Sports investment}
+- \textcolor{blue}{Performance analysis on recent competitions}
+- \textcolor{red}{Population (total and growth rate)}
 
 ## Possible achievements
 
@@ -198,6 +196,8 @@ legend("topleft", legend = medals_header, fill = color_medals, bty = "n", inset 
 text(x = bp_pred, y = array(pred_bra), label = array(pred_bra), pos = 3, cex = 3.5, col = "#999999")
 ```
 
+\* HFP: Hosting factor prediction
+
 ## GDP
 - Analyze correlation between GDP growth and medals growth $\Rightarrow$ fit in a regression model
 
@@ -284,7 +284,7 @@ box()
 
 \tiny{Source: IMF World Economic Outlook (WEO), April 2015}
 
-## Plotting Brazil MGR x GGF
+## Brazil MGR x GGF
 ```{r, echo=FALSE}
 hostData <- groupeddata[!(groupeddata$Country != "Brazil"),]
 hostData$Year <- as.numeric.factor(hostData$Year)
@@ -301,7 +301,6 @@ text(hostData$GGF, hostData$MGR, labels=hostData$Year, cex= 0.6, pos=3)
 summary(brazil2016LM())
 ```
 
-
 ## Using predicted MGR to improve 2016 prediction
 ```{r, echo=TRUE}
 intercept = as.numeric(coefficients(brazilLM)[1])
@@ -311,3 +310,68 @@ brazil2016MGR = intercept + slope * brazil2016GGF
 
 pred_bra_score * (1 + brazil2016MGR/100)
 ```
+
+## Sports investment
+Brazil:
+```{r eval=FALSE}
+> sports_investment_bra
+  year budget population budget_pp
+1 2010   1.50      195.2      7.68
+2 2011   2.50      196.9     12.69
+3 2012   3.44      198.6     17.32
+4 2013   3.38      200.3     16.87
+5 2014   3.39      202.7     16.72
+6 2015   3.01      204.4     14.72
+```
+
+## Sports investment
+```{r eval=FALSE}
+budget_pp_2016 <- mean(budget_pp[which(year >= 2012)])
+> budget_pp_2016
+[1] 16.4075
+budget_pp_2012 <- mean(budget_pp[which(year < 2012)])
+> budget_pp_2012
+[1] 10.185
+bra_score_2012 <-
+     3*tail(medals$Brazil..Gold, 1) +
+     2*tail(medals$Brazil..Silver, 1) +
+     tail(medals$Brazil..Bronze, 1)
+x <- (bra_score_2016*bra_score_2012)/bra_score_2012
+
+> x
+[1] 45.10653
+```
+
+## Sports investment
+Great Britain:
+```{r eval=FALSE}
+> sports_investment_gbr
+  year budget population budget_pp medals_score
+1 2000   0.19       58.9      3.22           60
+2 2012   0.84       63.7     13.18          140
+```
+```{r eval=FALSE}
+ratio_budget_medals <-
+  sports_investment_gbr$budget_pp/sports_investment_gbr$medals_score
+
+> ratio_budget_medals[2]/ratio_budget_medals[1]
+[1] 1.754215
+```
+
+## Sports investment
+```{r eval=FALSE}
+sports_inv <- (x-pred_bra_score)/1.754215
+> sports_inv
+[1] 3.36705
+
+> bra_gold_perc*sports_inv
+[1] 0.7488889
+> bra_silver_perc*sports_inv
+[1] 0.9829167
+> bra_bronze_perc*sports_inv
+[1] 1.638194
+```
+
+Rounding, we have +0 gold medal, +1 silver medal and +2 bronze medals relative to HFP.
+
+## Recent competitions
