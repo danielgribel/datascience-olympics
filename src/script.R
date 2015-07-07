@@ -1,6 +1,6 @@
 jforny <- "~/rstudio/OlympicsPrediction/"
 dgribel <- "~/PUC-MSc/datascience/olympics/"
-path <- jforny
+path <- dgribel
 source_medals <- paste(path, "dataset/medals.tsv", sep = "")
 
 medals <- read.table(source_medals, header = T, sep = "\t", fill = TRUE, stringsAsFactors = FALSE)
