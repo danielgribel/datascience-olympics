@@ -191,13 +191,23 @@ brazil2016LM <- function() {
   hostData$GGF <- as.numeric.factor(hostData$GGF)
   
   hostModel <- lm(hostData$MGR ~ hostData$GGF)
-  
-  #plot(hostData$MGR, hostData$GGF, xlab = "Brazil GGF", ylab = "Brazil MGR")
+
+#   plot(hostData$GGF, hostData$MGR, xlab = "Brazil GGF", ylab = "Brazil MGR", xlim=c(0, 2), ylim=c(0,3.5))
+#   abline(hostModel)
+#   text(hostData$GGF, hostData$MGR, labels=hostData$Year, cex= 0.6, pos=3)
+  brazilGDPGrowth12to15 = as.numeric(c(tail(ind[,"Brazil"], 2), c("0.14500", "-1.02600")))
+  worldGDPGrowth12to15 = as.numeric(c(rowMeans(ind[which(ind$Time >= "2012" & ind$Time <= "2013"),][-c(1)],na.rm=TRUE), c("3.38900", "3.45100")))
+  brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12to15)
+#   predict(hostModel, brazil2016GGF, interval="confidence")
+  brazil2016MGR = coefficients(hostModel)[1] + coefficients(hostModel)[2] * brazil2016GGF
+#   points(hostData$GGF, fitted.values(hostModel), col = "red")
+#   points(brazil2016GGF, brazil2016MGR, col = "blue")
+    
   return(hostModel)
 }
 
 brazilLM = brazil2016LM()
-summary(brazilLM)
+# summary(brazilLM)
 # layout(matrix(1:4,2,2))
 # plot(brazilLM)
 # layout(matrix(1:1))
@@ -207,6 +217,15 @@ worldGDPGrowth12to15 = as.numeric(c(rowMeans(ind[which(ind$Time >= "2012" & ind$
 brazil2016GGF = mean(brazilGDPGrowth12to15)/mean(worldGDPGrowth12to15)
 
 brazil2016MGR = coefficients(brazilLM)[1] + coefficients(brazilLM)[2] * brazil2016GGF
+
+gdp_pred_bra_score <- pred_bra_score * brazil2016MGR
+
+gdp_p <- gdp_pred_bra_score/3 + gdp_pred_bra_score/6 + gdp_pred_bra_score/9
+gdp_pred_bra_gold <- round(bra_gold_perc*gdp_p)
+gdp_pred_bra_silver <- round(bra_silver_perc*gdp_p)
+gdp_pred_bra_bronze <- round(bra_bronze_perc*gdp_p)
+
+gdp_pred_bra <- cbind(gdp_pred_bra_gold, gdp_pred_bra_silver, gdp_pred_bra_bronze)
 
 # CORRELATION THROUGH YEARS CONSIDERING ONLY 1 COUNTRY
 #country <- "China"
