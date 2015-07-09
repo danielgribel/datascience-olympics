@@ -44,15 +44,30 @@ $S_{c(y)} = 3g_{c(y)} + 2s_{c(y)} + b_{c(y)}$
 
 onde $g_{c(y)}$ corresponde ao total de medalhas de ouro ganho pelo país $c$ no ano $y$, $s_{c(y)}$ ao total de medalhas de prata e $b_{c(y)}$ ao total de medalhas de bronze. Agora, podemos fazer um levantamento sobre o fator sede considerando o *score* de medalhas ao invés do total de medalhas. Nesse novo resultado, podemos observar que o EUA teve um desempenho melhor sendo sede do que sendo visitante (pois aumentou sua proporção de ouro quando foi sede), nos trazendo evidências mais compatíveis com a realidade do que o gráfico mostrando o total de medalhas. A figura abaixo compara o *score* de medalhas do país sendo sede, com a média dos *scores* de medalhas quando o país foi visitante:
 
+```{r, echo=FALSE}
+#colors <- c("#DD4200", "#FF9155")
+#colnames(mean_away_factor) <- hosts_acronym
+#bp_scores <- barplot(rbind(home_factor, mean_away_factor),
+#              main="",
+#              ylab = "Score",
+#              beside = TRUE,
+#              col = colors,
+#              border = NA,
+#              space = c(0.1,1),
+#              ylim = y_lim_score,
+#              las = 1, cex.axis=0.7, cex.names=0.7)
+#
+#legend("topleft", legend = c("Home score", "Away score (mean)"), fill = colors, bty = "n",inset = 0.01, cex=0.6)
+#text(x = bp_scores, y = array(rbind(home_factor, mean_away_factor)), label = array(rbind(home_factor, mean_away_factor)), pos = 3, cex = 0.6, col = "#444444")
+```
+
 A partir desses dados, conseguimos obter a média para o fator sede (*hosting factor*):
-```{r eval=FALSE, echo=FALSE}
-home_factor/mean_away_factor
-```
-```{r eval=FALSE, echo=FALSE}
-round(home_factor/mean_away_factor, 4)
-```
-```{r eval=FALSE, echo=FALSE}
-mean(home_factor/mean_away_factor)
+```{r eval=FALSE}
+> home_factor/mean_away_factor
+          SPA      USA      AUS      GRE      CHI      GBR
+[1,] 1.708075 1.038534 1.545699 2.786885 1.646972 2.564103
+> mean(home_factor/mean_away_factor)
+[1] 1.881711
 ```
 
 o que significa que em média um país sede aumenta em 1.88x o seu *score*. Portanto, nesse ponto já temos condições de fazer uma primeira previsão (ainda grosseira) para o Brasil. Primeiramente, obtemos o desempenho do país nas últimas 6 olímpiadas:
@@ -175,14 +190,15 @@ sports_inv <- (x-pred_bra_score)/1.754215
 Ao considerar o aumento de investimentos em esporte, o acréscimo no score do Brasil é de aproximadamente 3.37. Convertendo para medalhas temos:
 
 ```{r eval=FALSE}
-> bra_gold_perc*sports_inv
-[1] 0.7488889
-> bra_silver_perc*sports_inv
-[1] 0.9829167
-> bra_bronze_perc*sports_inv
-[1] 1.638194
+p2 <- sports_inv/3 + sports_inv/6 + sports_inv/9
+> bra_gold_perc*p2
+[1] 0.4572537
+> bra_silver_perc*p2
+[1] 0.6001455
+> bra_bronze_perc*p2
+[1] 1.000242
 ```
-Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
+Arredondando, temos +0 medalha de ouro, +1 medalha de prata e +1 medalha de bronze em relação ao HFP.
 
 ### Competições recentes
 Nessa seção, analisaremos o desempenho do Brasil nas competições mundiais mais recentes. Importante notar que para cada modalidade o ano da última competição mundial pode ser diferente. Esse levantamento permite indicar a performance atual do Brasil em modalidades que o país costuma receber medalhas. Para esta finalidade, analisaremos especialmente as modalidades em que o Brasil tradicionalmente tem melhor desempenho nas olimpíadas, como vôlei, vôlei de praia, judô e futebol.
@@ -199,6 +215,9 @@ Previsão para a olimpíada de 2016: ?
 
 Neste caso, consideramos a projeção como sendo uma relação direta, e estimamos que o Brasil ganhará uma medalha de bronze (3ª posição) em 2016 no vôlei masculino. Por fim, aplicamos essa metodologia para cada uma das modalidades coletadas: vôlei masculino, vôlei feminino, vôlei de praia masculino, vôlei de praia feminino e futebol masculino. E também introduzimos uma projeção para o polo-aquático masculino e o handball feminino, que tiveram desempenho baixo ao longo das séries históricas, mas que em 2015 ganharam medalha de bronze e ouro (respectivamente) na última competição mundial, sendo portanto, modalidades promissoras para 2016.
 
-Computando o somatório total da projeção de cada modalidade, obtemos um resultado final de +0 medalha de ouro, -1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
+Computando o somatório total da projeção de cada modalidade, obtemos um resultado de +0 medalha de ouro, -1 medalha de prata e +2 medalhas de bronze em relação ao HFP.
 
 ## Conclusões
+De acordo com nossa metodologia, cujo modelo é definido basicamente por 4 dimensões -- fator sede (conjuntamente com o histórico de medalhas), crescimento econômico, investimento em esportes e competições recentes -- podemos concluir que o Brasil terá em 2016 um desempenho superior ao alcançado em 2012. No entanto, o crescimento de medalhas será pequeno, com +1 ouro, -1 prata e +2 bronze. Esse crescimento tímido se deve por conta da projeção de crescimento econômico, dimensão que vem trazendo a predição para baixo.
+
+Como trabalho futuro, pretendemos investigar uma abordagem capaz de determinar pesos para cada uma das dimensões levadas em consideração para a construção do modelo. No atual trabalho, cada dimensão contribui com o mesmo peso para as predições. Além disso, pretendemos aprimorar a análise feita para as competições recentes, coletando mais modalidades e integrando às outras dimensões do modelo para que tenhamos predições mais assertivas.
